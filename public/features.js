@@ -511,11 +511,11 @@
     }
     // Plain text, with [label](https://…) turned into a link that opens in a new tab.
     function textNode(s) {
-      var p = el('p', { class: 'fx-text' }), re = /\[([^\]]+)\]\((https:\/\/[^\s)]+)\)/g, last = 0, m;
+      var p = el('p', { class: 'fx-text' }), re = /\[([^\]]+)\]\(([^\s)]+)\)/g, last = 0, m;
       s = String(s);
       while ((m = re.exec(s))) {
         p.appendChild(document.createTextNode(s.slice(last, m.index)));
-        p.appendChild(el('a', { href: m[2], target: '_blank', rel: 'noopener', text: m[1] }));
+        p.appendChild(el('a', { href: m[2], target: /^https?:/.test(m[2]) ? '_blank' : null, rel: 'noopener', text: m[1] }));
         last = re.lastIndex;
       }
       p.appendChild(document.createTextNode(s.slice(last)));
@@ -919,7 +919,9 @@
   /* ---------- Links kept in lodge-data.js (booking policy, guest guide) ---------- */
   $$('a[data-link]').forEach(function (a) {
     var url = D.booking[a.getAttribute('data-link')];
-    if (url) a.href = url; else a.hidden = true;
+    if (!url) { a.hidden = true; return; }
+    a.href = url;
+    if (/^https?:/.test(url)) { a.target = '_blank'; a.rel = 'noopener'; } else { a.removeAttribute('target'); a.removeAttribute('rel'); }
   });
 
   /* ---------- FAQ ---------- */
@@ -927,7 +929,7 @@
     box.innerHTML = '';
     (D.faqs || []).forEach(function (f) {
       var url = f.link && D.booking[f.link], kids = [el('summary', { text: f.q }), el('p', { text: f.a })];
-      if (url) kids.push(el('p', null, [el('a', { href: url, target: '_blank', rel: 'noopener', class: 'faq-link',
+      if (url) kids.push(el('p', null, [el('a', { href: url, target: /^https?:/.test(url) ? '_blank' : null, rel: 'noopener', class: 'faq-link',
         text: f.link === 'onboardingUrl' ? 'Open the guest guide' : 'Read the full booking policy' })]));
       box.appendChild(el('details', null, kids));
     });

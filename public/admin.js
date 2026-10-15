@@ -194,9 +194,9 @@
     var B = D.booking || {};
     if (b.status === 'confirmed') {
       var lines = ['Hi ' + first + ', thank you for booking Lindani Farm! We\'re happy to confirm ' + roomName(b.room) + ' from ' + dates + '.'];
-      if (b.estimate) lines.push('The total is ' + money(b.estimate) + '. A ' + (B.depositPercent || 50) + '% deposit of ' + money(b.estimate * (B.depositPercent || 50) / 100) + ' secures your stay, with the balance due on arrival. ' + (B.depositInstructions || ''));
+      if (b.estimate) lines.push('The total is ' + money(b.estimate) + '. A ' + (B.depositPercent || 50) + '% deposit of ' + money(b.estimate * (B.depositPercent || 50) / 100) + ' secures your stay, with the balance due 7 days before check-in. ' + (B.depositInstructions || ''));
       if (B.onboardingUrl) lines.push('Everything for your stay (directions, check-in from ' + (B.checkIn || '14:00') + ', Wi-Fi and house rules) is in our guest guide: ' + B.onboardingUrl);
-      if (B.policyUrl) lines.push('Our booking policy: ' + B.policyUrl);
+      if (B.policyUrl) lines.push('Our booking policy: ' + new URL(B.policyUrl, location.href).href);
       lines.push('See you soon!\nLindani Farm');
       return lines.join('\n\n');
     }
