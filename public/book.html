@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Book your stay · Lindani Farm</title>
-<meta name="description" content="Check availability and send a booking request for Lindani Farm, four self-catering studios just outside Paarl.">
+<meta name="description" content="Book Lindani Farm on NightsBridge: live availability and instant booking for four self-catering units just outside Paarl.">
 <link rel="preload" href="assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,61 +46,37 @@
       <div>
         <p class="label">(&nbsp;Bookings&nbsp;)</p>
         <h1 id="page-title" class="h-xl" data-i18n-html="page_book">Book <em>your stay</em></h1>
-        <p class="hero-sub">Pick your dates, choose a studio and send your request straight to the farm.</p>
+        <p class="hero-sub">Pick your dates, see the price, then book instantly on NightsBridge.</p>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="req-title" id="request">
-    <div class="wrap book-grid">
-      <div>
-        <div class="section-head stacked">
-          <div class="nb-panel" data-nb hidden>
-            <span class="tag">(&nbsp;Book&nbsp;online&nbsp;)</span>
-            <h2 class="h-l">Book on <em>NightsBridge</em></h2>
-            <p>See live availability for every unit, book instantly and pay your deposit securely. Our calendar updates the moment you book, so there are never double bookings.</p>
-            <p class="nb-actions"><a class="btn btn-book" href="#" data-nb-link target="_blank" rel="noopener"><span>Book on NightsBridge</span></a> <a href="policy.html" data-link="policyUrl" class="nb-policy">Booking policy</a></p>
-          </div>
-          <span class="tag">(&nbsp;Step&nbsp;2&nbsp;)</span>
-          <h2 id="req-title" class="h-l">Your booking <em>request</em></h2>
-          <p>This is a request, not a confirmed booking. The farm replies to confirm availability and how to pay the deposit. By booking you accept our <a href="policy.html" data-link="policyUrl" style="text-decoration:underline;text-underline-offset:3px">booking policy</a>.</p>
-        </div>
-        <form class="bform" id="book-form" novalidate>
-          <div class="hp" aria-hidden="true"><label for="b-website">Leave this empty</label><input id="b-website" name="website" tabindex="-1" autocomplete="off"></div>
-          <div class="field"><label for="b-name">Full name*</label><input id="b-name" name="name" autocomplete="name" required></div>
-          <div class="field"><label for="b-email">Email*</label><input id="b-email" name="email" type="email" autocomplete="email" required></div>
-          <div class="field"><label for="b-phone">Phone / WhatsApp*</label><input id="b-phone" name="phone" type="tel" autocomplete="tel" required></div>
-          <div class="field"><label for="b-room">Studio</label><select id="b-room" name="room"></select></div>
-          <div class="field"><label for="b-from">Arrive*</label><input id="b-from" name="from" type="date" required></div>
-          <div class="field"><label for="b-to">Leave*</label><input id="b-to" name="to" type="date" required></div>
-          <div class="field"><label for="b-adults">Adults</label><select id="b-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
-          <div class="field"><label for="b-kids">Children</label><select id="b-kids" name="kids"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-          <div class="field full"><label for="b-notes">Notes</label><textarea id="b-notes" name="notes" placeholder="Arrival time, celebrations, questions…"></textarea></div>
-          <div class="bform-foot">
-            <p class="form-note" id="bnote" role="status"></p>
-            <button class="btn btn-book" type="submit">Send booking request <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
-          </div>
-        </form>
-      </div>
-      <section class="book-side" aria-labelledby="sum-title">
-        <div class="summary-card" id="book-summary">
-          <h3 id="sum-title">Your <em>stay</em></h3>
-          <div id="sum-body"><p class="fx-small">Choose your dates and a studio to see the price here.</p></div>
-        </div>
-      </section>
-    </div>
+  <section class="quick is-page" id="request" aria-labelledby="quick-title">
+    <div class="wrap"><div class="quick-card">
+      <span class="tag">(&nbsp;Live&nbsp;availability&nbsp;on&nbsp;NightsBridge&nbsp;)</span>
+      <h2 id="quick-title" class="h-l">Choose <em>your dates</em></h2>
+      <form class="qform" id="qform" novalidate aria-describedby="qnote">
+        <div class="field"><label for="q-from">Arrive</label><input id="q-from" name="from" type="date" required></div>
+        <div class="field"><label for="q-to">Leave</label><input id="q-to" name="to" type="date" required></div>
+        <div class="field"><label for="q-adults">Adults</label><select id="q-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div class="field"><label for="q-kids">Children</label><select id="q-kids" name="kids"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        <button class="btn btn-book" type="submit"><span data-i18n="check_dates">Check dates</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></button>
+      </form>
+      <p class="form-note" id="qnote" role="status">Our calendar lives on NightsBridge, so every unit you see there is free to book. By booking you accept our <a href="policy.html" data-link="policyUrl">booking policy</a>.</p>
+      <div class="avail-out" id="avail-out" aria-live="polite"></div>
+    </div></div>
   </section>
 
   <section class="section" aria-labelledby="how-title">
     <div class="wrap">
       <div class="section-head">
         <h2 id="how-title" class="h-l">How booking <em>works</em></h2>
-        <p>No online payment needed: you pay by EFT once we've confirmed your dates.</p>
+        <p>Every booking is made on NightsBridge, so the calendar is always up to date and there are never double bookings.</p>
       </div>
       <ol class="steps">
-        <li><span class="tag">(&nbsp;01&nbsp;)</span><h3>Send a request</h3><p>Choose your dates and send a request from this page, or WhatsApp us on 083&nbsp;291&nbsp;6790.</p></li>
-        <li><span class="tag">(&nbsp;02&nbsp;)</span><h3>We confirm</h3><p>We check availability and send your invoice with our banking details.</p></li>
-        <li><span class="tag">(&nbsp;03&nbsp;)</span><h3>Pay the deposit</h3><p>Pay 50% by EFT within 24 hours (or the full amount) and send us the proof of payment. Stays less than 7 days away are paid in full.</p></li>
+        <li><span class="tag">(&nbsp;01&nbsp;)</span><h3>Choose your dates</h3><p>Open NightsBridge from any "Book" button on this site and see which units are free.</p></li>
+        <li><span class="tag">(&nbsp;02&nbsp;)</span><h3>Book instantly</h3><p>Pick one unit, or two interlinking units for a family, and complete your booking on NightsBridge.</p></li>
+        <li><span class="tag">(&nbsp;03&nbsp;)</span><h3>Pay the deposit</h3><p>Pay 50% within 24 hours (or the full amount) using the details you receive. Stays less than 7 days away are paid in full.</p></li>
         <li><span class="tag">(&nbsp;04&nbsp;)</span><h3>Pay the balance</h3><p>The balance is due 7 days before check-in.</p></li>
         <li><span class="tag">(&nbsp;05&nbsp;)</span><h3>Arrive</h3><p>The day before, we WhatsApp your access code and directions. Check in from 14:00 to 17:00 (later by arrangement).</p></li>
       </ol>
