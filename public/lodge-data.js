@@ -50,7 +50,7 @@ window.LODGE = {
     // The farm's full booking policy (flip-book) and the guest guide every guest
     // gets once a stay is booked. Shown on the Book page, in the FAQ answers,
     // the concierge and the "request sent" step.
-    policyUrl: "https://heyzine.com/flip-book/764e76e23f.html#page/14",
+    policyUrl: "https://heyzine.com/flip-book/764e76e23f.html#page/10",  // Guest Guide page 10 = Booking Policy
     // Lindani's NightsBridge booking page. Once set, every "Book your stay" button goes
     // straight to NightsBridge (live availability, no double bookings). Leave "" to keep
     // booking requests by WhatsApp/email.
