@@ -47,7 +47,6 @@
   function toMs(s) { var p = s.split('-'); return Date.UTC(+p[0], +p[1] - 1, +p[2]); }
   function toStr(ms) { return new Date(ms).toISOString().slice(0, 10); }
   function addDays(s, n) { return toStr(toMs(s) + n * 864e5); }
-  function nightsBetween(a, b) { return Math.round((toMs(b) - toMs(a)) / 864e5); }
   function today() { var d = new Date(); return toStr(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); }
   function fmtDate(s) {
     try { return new Date(toMs(s)).toLocaleDateString('en-ZA', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' }); }
@@ -64,11 +63,6 @@
     }
     return room.rate;
   }
-  function stayPrice(room, from, to) {
-    var total = 0, n = nightsBetween(from, to);
-    for (var i = 0; i < n; i++) total += nightRate(room, addDays(from, i));
-    return Math.round(total);
-  }
   // With NightsBridge connected, its calendar is the only source of availability:
   // the sample bookings in lodge-data.js are ignored and nothing here claims dates are full.
   var NB_LIVE = !!D.booking.nightsbridgeUrl;
@@ -79,261 +73,11 @@
     if (NB_LIVE) return true;
     return !D.booked.some(function (b) { return b.room === roomId && from < b.to && to > b.from; });
   }
-  function freeRooms(from, to) { return D.rooms.filter(function (r) { return isFree(r.id, from, to); }); }
-  // Cheapest set of free studios that fits the party (four studios = 15 combinations, so try them all).
-  function bestCombo(rooms, adults, kids, from, to) {
-    var best = null;
-    for (var mask = 1; mask < (1 << rooms.length); mask++) {
-      var set = rooms.filter(function (r, i) { return mask & (1 << i); });
-      var maxA = set.reduce(function (a, r) { return a + r.maxAdults; }, 0);
-      var beds = set.reduce(function (a, r) { return a + r.sleeps; }, 0);
-      if (maxA < adults || beds < adults + kids) continue;
-      var price = set.reduce(function (a, r) { return a + stayPrice(r, from, to); }, 0);
-      if (!best || set.length < best.rooms.length || (set.length === best.rooms.length && price < best.price)) best = { rooms: set, price: price };
-    }
-    return best;
-  }
   function otaSaving(direct) {
     var c = (D.booking.otaCommissionPercent || 0) / 100;
     return c > 0 && c < 1 ? Math.round(direct / (1 - c) - direct) : 0;
   }
-  // Booking policy: the minimum stay applies when the stay includes a Friday or Saturday night.
-  function minNightsFor(from, to) {
-    if (!D.booking.minNightsWeekendOnly) return D.booking.minNights;
-    for (var d = from; d < to; d = addDays(d, 1)) { var w = new Date(toMs(d)).getUTCDay(); if (w === 5 || w === 6) return D.booking.minNights; }
-    return 1;
-  }
   var minRule = D.booking.minNightsWeekendOnly ? 'Stays that include a Friday or Saturday night are at least ' + D.booking.minNights + ' nights.' : 'The minimum stay is ' + D.booking.minNights + ' nights.';
-  // Booking policy: 50% deposit within 24 hours and the balance 7 days before check-in, or full payment when arrival is closer than that.
-  function paymentPlan(from, total) {
-    var dep = D.booking.depositPercent || 50, days = D.booking.balanceDueDays || 7;
-    if (!total) return null;
-    if (from < addDays(today(), days)) return { full: true, text: 'Arrival is less than ' + days + ' days away, so the full ' + money(total) + ' is due within 24 hours of booking.' };
-    var d = Math.round(total * dep / 100);
-    return { full: false, deposit: d, balance: total - d, balanceDue: addDays(from, -days),
-      text: dep + '% deposit (' + money(d) + ') within 24 hours of booking; balance (' + money(total - d) + ') by ' + fmtDate(addDays(from, -days)) + '. Or pay in full. EFT only.' };
-  }
-  function validStay(from, to) {
-    if (!from || !to) return 'Choose an arrival and a departure date.';
-    if (from < today()) return 'Arrival can\'t be in the past.';
-    var n = nightsBetween(from, to);
-    if (n < 1) return 'Departure needs to be after arrival.';
-    if (n < minNightsFor(from, to)) return minRule;
-    if (n > D.booking.maxNights) return 'For stays longer than ' + D.booking.maxNights + ' nights, please contact us directly.';
-    return '';
-  }
-
-  /* ---------- date range picker ----------
-     Replaces each pair of native date inputs with two buttons that open one
-     calendar. The native inputs stay in the form (hidden) and keep the values,
-     so every form reads its dates exactly as before. */
-  var picker = (function () {
-    var DAY = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    var pairs = [], st = null, pop, backdrop, monthsEl, hintEl, sumEl, doneBtn;
-    var MAXD = 540;
-    function fullNight(d) { return D.rooms.every(function (r) { return !isFree(r.id, d, addDays(d, 1)); }); }
-    function firstFullAfter(from) {
-      for (var i = 1; i <= D.booking.maxNights; i++) { var n = addDays(from, i); if (fullNight(n)) return n; }
-      return addDays(from, D.booking.maxNights);
-    }
-    function monthStart(d) { return d.slice(0, 8) + '01'; }
-    function addMonths(m, k) { var y = +m.slice(0, 4), mo = +m.slice(5, 7) - 1 + k; y += Math.floor(mo / 12); mo = ((mo % 12) + 12) % 12; return y + '-' + String(mo + 1).padStart(2, '0') + '-01'; }
-    function monthName(m) { try { return new Date(toMs(m)).toLocaleDateString('en-ZA', { month: 'long', year: 'numeric', timeZone: 'UTC' }); } catch (e) { return m.slice(0, 7); } }
-    function longDate(d) { try { return new Date(toMs(d)).toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }); } catch (e) { return d; } }
-    function wide() { return window.innerWidth >= 760; }
-    function asStart(d) { return d < today() || d > addDays(today(), MAXD) || fullNight(d); }
-    function disabled(d) {
-      if (st.step === 'to' && st.from && d > st.from) return nightsBetween(st.from, d) < minNightsFor(st.from, d) || d > firstFullAfter(st.from);
-      return asStart(d);
-    }
-    function svgIcon() {
-      var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('aria-hidden', 'true'); s.setAttribute('class', 'dp-ico');
-      s.innerHTML = '<rect x="3.5" y="5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.5"/>';
-      return s;
-    }
-    function attach(a, b) {
-      if (!a || !b || a._dp) return;
-      var pair = { a: a, b: b, btns: {} };
-      [['from', a], ['to', b]].forEach(function (x) {
-        var which = x[0], input = x[1];
-        var lab = input.labels && input.labels[0] ? input.labels[0].textContent.replace('*', '').trim() : (which === 'from' ? 'Arrive' : 'Leave');
-        var btn = el('button', { type: 'button', class: 'dp-trigger' }, [el('span', { class: 'dp-val' }), svgIcon()]);
-        btn._lab = lab;
-        btn.addEventListener('click', function () { open(pair, which, btn); });
-        input.classList.add('dp-native'); input.setAttribute('tabindex', '-1'); input.setAttribute('aria-hidden', 'true');
-        input.addEventListener('focus', function () { btn.focus(); });
-        input.after(btn);
-        input._dp = pair; pair.btns[which] = btn;
-      });
-      pairs.push(pair); sync(pair);
-    }
-    function sync(pair) {
-      [['from', pair.a], ['to', pair.b]].forEach(function (x) {
-        var btn = pair.btns[x[0]], v = x[1].value;
-        $('.dp-val', btn).textContent = v ? fmtDate(v) : 'Add date';
-        btn.classList.toggle('is-empty', !v);
-        btn.setAttribute('aria-label', btn._lab + ': ' + (v ? longDate(v) : 'not chosen') + '. Open calendar');
-      });
-    }
-    function syncAll() { pairs = pairs.filter(function (p) { return document.body.contains(p.a); }); pairs.forEach(sync); }
-
-    function build() {
-      backdrop = el('div', { class: 'dp-backdrop', hidden: true, onclick: function () { close(true); } });
-      hintEl = el('p', { class: 'dp-hint', 'aria-live': 'polite' });
-      monthsEl = el('div', { class: 'dp-months' });
-      sumEl = el('p', { class: 'dp-sum' });
-      doneBtn = el('button', { type: 'button', class: 'fx-btn fx-btn-book', text: 'Done', onclick: function () { close(true); } });
-      pop = el('div', { class: 'dp-pop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Choose your dates', hidden: true }, [
-        el('div', { class: 'dp-top' }, [
-          el('button', { type: 'button', class: 'dp-nav', 'aria-label': 'Previous month', html: '&#8249;', onclick: function () { shift(-1); } }),
-          hintEl,
-          el('button', { type: 'button', class: 'dp-nav', 'aria-label': 'Next month', html: '&#8250;', onclick: function () { shift(1); } })
-        ]),
-        monthsEl,
-        NB_LIVE ? null : el('p', { class: 'dp-legend' }, [el('span', { class: 'dp-key', 'aria-hidden': 'true', text: '12' }), ' Fully booked' + (D.showDemoNotice ? ' · sample calendar' : '')]),
-        el('div', { class: 'dp-foot' }, [sumEl, el('div', { class: 'dp-foot-btns' }, [
-          el('button', { type: 'button', class: 'fx-btn fx-btn-ghost', text: 'Clear', onclick: function () { st.from = ''; st.to = ''; st.step = 'from'; render(); } }),
-          doneBtn])])
-      ]);
-      pop.addEventListener('keydown', onKey);
-      monthsEl.addEventListener('mouseover', function (e) {
-        var d = e.target.closest('[data-d]');
-        if (st && st.step === 'to' && st.from && d) { st.hover = d.getAttribute('data-d'); paint(); }
-      });
-      monthsEl.addEventListener('mouseleave', function () { if (st) { st.hover = ''; paint(); } });
-      document.body.appendChild(backdrop); document.body.appendChild(pop);
-      window.addEventListener('resize', function () { if (st) { render(); place(); } });
-      window.addEventListener('scroll', function () { if (st && wide()) place(); }, { passive: true });
-      document.addEventListener('mousedown', function (e) {
-        if (st && wide() && !pop.contains(e.target) && !e.target.closest('.dp-trigger')) close(true);
-      });
-    }
-    function open(pair, which, btn) {
-      if (!pop) build();
-      var a = pair.a.value, b = pair.b.value;
-      st = { pair: pair, btn: btn, from: a, to: b, step: which === 'to' && a ? 'to' : 'from', hover: '' };
-      var focus = (which === 'to' && b) ? b : (a || today());
-      st.view = monthStart(focus < today() ? today() : focus);
-      st.focus = focus < today() ? today() : focus;
-      pop.hidden = false; backdrop.hidden = wide();
-      document.documentElement.classList.toggle('dp-lock', !wide());
-      render(); place(); focusDay();
-    }
-    function close(commitPartial) {
-      if (!st) return;
-      var s0 = st; st = null;
-      if (commitPartial !== false) commit(s0);
-      pop.hidden = true; backdrop.hidden = true; document.documentElement.classList.remove('dp-lock');
-      s0.btn.focus();
-    }
-    function commit(s0) {
-      var p = s0.pair;
-      if (p.a.value !== s0.from) { p.a.value = s0.from; p.a.dispatchEvent(new Event('change', { bubbles: true })); p.a.dispatchEvent(new Event('input', { bubbles: true })); }
-      if (s0.to || !s0.from) { if (p.b.value !== s0.to) { p.b.value = s0.to; p.b.dispatchEvent(new Event('change', { bubbles: true })); p.b.dispatchEvent(new Event('input', { bubbles: true })); } }
-      syncAll();
-    }
-    function place() {
-      if (!wide()) { pop.style.cssText = ''; pop.classList.add('dp-sheet'); return; }
-      pop.classList.remove('dp-sheet');
-      var r = st.btn.getBoundingClientRect(), w = pop.offsetWidth, h = pop.offsetHeight;
-      var left = Math.min(Math.max(8, r.left), window.innerWidth - w - 8);
-      var top = r.bottom + 8;
-      if (top + h > window.innerHeight - 8 && r.top - h - 8 > 8) top = r.top - h - 8;
-      if (top + h > window.innerHeight - 8) top = Math.max(8, window.innerHeight - h - 8);
-      pop.style.left = left + 'px'; pop.style.top = top + 'px';
-    }
-    function shift(k) { st.view = addMonths(st.view, k); st.focus = addMonths(st.focus.slice(0, 8) + '01', k); render(); }
-    function render() {
-      var n = wide() ? 2 : 1;
-      monthsEl.innerHTML = '';
-      monthsEl.style.gridTemplateColumns = 'repeat(' + n + ',minmax(0,1fr))';
-      for (var k = 0; k < n; k++) {
-        var m = addMonths(st.view, k), days = el('div', { class: 'dp-days' });
-        DAY.forEach(function (d) { days.appendChild(el('span', { class: 'dp-dow', 'aria-hidden': 'true', text: d.slice(0, 2) })); });
-        var lead = (weekday(m) + 6) % 7;
-        for (var i = 0; i < lead; i++) days.appendChild(el('span', { class: 'dp-pad' }));
-        for (var d = m; d.slice(0, 7) === m.slice(0, 7); d = addDays(d, 1)) {
-          days.appendChild(el('button', { type: 'button', class: 'dp-day', 'data-d': d, tabindex: '-1', text: String(+d.slice(8)),
-            onclick: (function (dd) { return function () { pick(dd); }; })(d) }));
-        }
-        monthsEl.appendChild(el('div', { class: 'dp-month' }, [el('p', { class: 'dp-mname', text: monthName(m) }), days]));
-      }
-      var first = st.view, last = addMonths(st.view, n);
-      if (st.focus < first || st.focus >= last) st.focus = first < today() ? today() : first;
-      $$('.dp-nav', pop)[0].disabled = st.view <= monthStart(today());
-      paint();
-    }
-    function paint() {
-      var lo = st.from, hi = st.to || (st.step === 'to' && st.hover > st.from ? st.hover : '');
-      $$('.dp-day', monthsEl).forEach(function (b) {
-        var d = b.getAttribute('data-d'), full = fullNight(d), dis = disabled(d);
-        b.disabled = dis;
-        b.classList.toggle('is-full', full);
-        b.classList.toggle('is-today', d === today());
-        b.classList.toggle('is-start', d === lo);
-        b.classList.toggle('is-end', !!hi && d === hi);
-        b.classList.toggle('in-range', !!(lo && hi && d > lo && d < hi));
-        b.setAttribute('tabindex', d === st.focus ? '0' : '-1');
-        b.setAttribute('aria-pressed', d === lo || d === st.to ? 'true' : 'false');
-        b.setAttribute('aria-label', longDate(d) + (full ? ', fully booked' : '') + (d === lo ? ', arrival' : '') + (d === st.to ? ', departure' : '') + (dis && !full ? ', not available' : ''));
-      });
-      var nights = st.from && st.to ? nightsBetween(st.from, st.to) : 0;
-      hintEl.textContent = st.step === 'from' || !st.from ? 'Choose your arrival date' : 'Now choose your departure date' + (D.booking.minNights > 1 ? (D.booking.minNightsWeekendOnly ? ' (minimum ' + D.booking.minNights + ' nights over a weekend)' : ' (minimum ' + D.booking.minNights + ' nights)') : '');
-      sumEl.textContent = st.from ? fmtDate(st.from) + ' → ' + (st.to ? fmtDate(st.to) + ' · ' + nights + ' night' + (nights > 1 ? 's' : '') : '…') : 'No dates chosen';
-      doneBtn.textContent = st.from && !st.to ? 'Done (arrival only)' : 'Done';
-    }
-    function focusDay() {
-      var b = $('.dp-day[data-d="' + st.focus + '"]', monthsEl);
-      if (b) b.focus({ preventScroll: true });
-    }
-    function pick(d) {
-      if (st.step === 'to' && st.from && d > st.from) {
-        st.to = d; st.focus = d; paint();
-        setTimeout(function () { close(true); }, reduceMotion ? 0 : 220);
-      } else {
-        st.from = d; st.to = ''; st.step = 'to'; st.focus = d; st.hover = ''; paint(); focusDay();
-      }
-    }
-    function onKey(e) {
-      if (e.key === 'Escape') { e.preventDefault(); close(false); return; }
-      if (e.key === 'Tab') {
-        var f = $$('button:not([disabled])', pop).filter(function (b) { return !b.classList.contains('dp-day') || b.getAttribute('tabindex') === '0'; });
-        var i = f.indexOf(document.activeElement);
-        if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
-        else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
-        return;
-      }
-      if (!e.target.classList.contains('dp-day')) return;
-      var step = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[e.key];
-      var d = st.focus;
-      if (step) d = addDays(d, step);
-      else if (e.key === 'PageUp') d = addMonths(monthStart(d), -1).slice(0, 8) + d.slice(8);
-      else if (e.key === 'PageDown') d = addMonths(monthStart(d), 1).slice(0, 8) + d.slice(8);
-      else if (e.key === 'Home') d = addDays(d, -((weekday(d) + 6) % 7));
-      else if (e.key === 'End') d = addDays(d, 6 - ((weekday(d) + 6) % 7));
-      else return;
-      e.preventDefault();
-      if (d < today()) d = today();
-      var n = wide() ? 2 : 1;
-      if (monthStart(d) < st.view) st.view = monthStart(d);
-      if (monthStart(d) >= addMonths(st.view, n)) st.view = addMonths(monthStart(d), 1 - n);
-      st.focus = d;
-      if (!$('.dp-day[data-d="' + d + '"]', monthsEl)) render(); else paint();
-      if (st.step === 'to' && st.from) { st.hover = d; paint(); }
-      focusDay();
-    }
-    return { attach: attach, syncAll: syncAll };
-  })();
-
-  function nextOpenings(q) {
-    var n = nightsBetween(q.from, q.to), found = [];
-    for (var i = 1; i <= 60 && found.length < 2; i++) {
-      var a = addDays(q.from, i), b = addDays(a, n);
-      if (bestCombo(freeRooms(a, b), q.adults, q.kids, a, b)) { found.push(a); i += n; }
-    }
-    return found.map(function (a) { return { from: a, to: addDays(a, n) }; });
-  }
 
   /* ---------- language ---------- */
   var LANGS = { en: 'EN', de: 'DE', nl: 'NL', af: 'AF' };
@@ -368,7 +112,6 @@
   /* ---------- book-direct note ---------- */
   function nudgeText(amount) { return t('nudge', { amount: money(amount), ota: D.booking.otaName }); }
   // Only shown when there's a real saving to name
-  function nudgeEl(amount) { return amount > 0 ? el('p', { class: 'nudge', text: nudgeText(amount) }) : document.createTextNode(''); }
   function renderNudges() {
     $$('[data-nudge]').forEach(function (n) {
       var kind = n.getAttribute('data-nudge');
@@ -667,156 +410,6 @@
     return api;
   })();
 
-  // Links like book.html?from=2026-11-20&to=2026-11-22&room=studio-3 pre-fill the booking forms
-  var URLQ = (function () {
-    var q = {}; try { new URLSearchParams(location.search).forEach(function (v, k) { q[k] = v; }); } catch (e) {}
-    var ok = function (d) { return /^\d{4}-\d{2}-\d{2}$/.test(d || '') && d >= today(); };
-    if (!ok(q.from)) delete q.from;
-    if (!ok(q.to) || (q.from && q.to <= q.from)) delete q.to;
-    if (q.room && !D.rooms.some(function (r) { return r.id === q.room; })) delete q.room;
-    return q;
-  })();
-
-  /* =====================================================================
-     AVAILABILITY CHECKER (the "Plan your stay here" form under the hero)
-     ===================================================================== */
-  (function () {
-    var form = $('#qform'), out = $('#avail-out');
-    if (!form || !out) return;
-    var f = form.elements, t0 = today();
-    f.from.min = t0; f.to.min = addDays(t0, 1);
-    // Default to the next weekend at least three days away, so the form shows a real example
-    var fri = addDays(t0, ((5 - weekday(t0) + 7) % 7) || 7);
-    if (nightsBetween(t0, fri) < 3) fri = addDays(fri, 7);
-    f.from.value = URLQ.from || fri; f.to.value = URLQ.to || addDays(f.from.value, D.booking.minNights);
-    if (+URLQ.adults) f.adults.value = String(Math.min(8, +URLQ.adults));
-    if (URLQ.kids) f.kids.value = String(Math.min(4, +URLQ.kids || 0));
-    picker.attach(f.from, f.to);
-    f.from.addEventListener('change', function () {
-      if (!f.from.value) return;
-      f.to.min = addDays(f.from.value, 1);
-      if (!f.to.value || f.to.value <= f.from.value) f.to.value = addDays(f.from.value, D.booking.minNights);
-      picker.syncAll();
-    });
-    function setErr(input, msg) {
-      var id = input.id + '-err', box = document.getElementById(id);
-      if (!msg) { if (box) box.remove(); input.removeAttribute('aria-invalid'); input.removeAttribute('aria-describedby'); return; }
-      if (!box) { box = el('p', { class: 'err', id: id }); input.parentNode.appendChild(box); }
-      box.textContent = msg; input.setAttribute('aria-invalid', 'true'); input.setAttribute('aria-describedby', id);
-    }
-    function card(name, sub, total, nights, btnLabel, prefill) {
-      return el('li', { class: 'avail-card' }, [
-        el('div', null, [el('b', { class: 'avail-name', text: name }), el('span', { class: 'avail-sub', text: sub })]),
-        el('div', { class: 'avail-price' }, [el('b', { text: money(total) }), el('span', { text: 'for ' + nights + ' night' + (nights > 1 ? 's' : '') + ' · about ' + money(total / nights) + ' a night' })]),
-        el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { location.href = bookUrl(prefill); } })
-      ]);
-    }
-    // NightsBridge mode: the price for the chosen dates, how many units the party needs,
-    // and one button that opens NightsBridge on those dates (live availability, instant booking).
-    function runNB(q) {
-      out.innerHTML = '';
-      var n = nightsBetween(q.from, q.to), party = q.adults + q.kids;
-      var perUnit = D.rooms[0].sleeps || 2, units = Math.ceil(party / perUnit);
-      var head = fmtDate(q.from) + ' – ' + fmtDate(q.to) + ' · ' + n + ' night' + (n > 1 ? 's' : '') + ' · ' + party + ' guest' + (party > 1 ? 's' : '');
-      if (units > D.rooms.length) {
-        out.appendChild(el('h3', { class: 'avail-title', text: 'A group of ' + party + '? Let\'s talk' }));
-        out.appendChild(el('p', { class: 'avail-meta', text: 'Our ' + D.rooms.length + ' units sleep ' + D.rooms.length * perUnit + ' guests in total. Send us your dates and we\'ll see what we can do.' }));
-        out.appendChild(el('p', { class: 'avail-meta' }, [el('a', { href: waLink('Hello Lindani Farm, we are ' + party + ' guests and would like to stay from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + '.'), target: '_blank', rel: 'noopener', class: 'avail-link', text: 'Ask the farm on WhatsApp' })]));
-        return;
-      }
-      // nights grouped by rate, e.g. "2 nights × R1,400 + 1 night × R1,800"
-      var groups = [], unitTotal = 0;
-      for (var i = 0; i < n; i++) {
-        var r = nightRate(D.rooms[0], addDays(q.from, i)); unitTotal += r;
-        var g = groups[groups.length - 1];
-        if (g && g.rate === r) g.n++; else groups.push({ rate: r, n: 1 });
-      }
-      var total = unitTotal * units;
-      var calc = groups.map(function (g) { return g.n + ' night' + (g.n > 1 ? 's' : '') + ' × ' + money(g.rate); }).join(' + ') + (units > 1 ? ', × ' + units + ' units' : '');
-      var name = units === 1 ? 'One unit' : units === 2 ? 'Two interlinking units' : units + ' units';
-      var sub = units === 1 ? 'Queen bed · kitchenette · en-suite shower · sleeps ' + perUnit
-        : units === 2 ? 'One + Two or Three + Four: open the connecting door and stay together'
-        : 'Two interlinking pairs' + (units === 3 ? ' (or one pair plus a unit)' : '') + ' · sleeps ' + units * perUnit;
-      out.appendChild(el('div', { class: 'avail-top' }, [el('h3', { class: 'avail-title', text: 'Your stay: ' + money(total) })]));
-      out.appendChild(el('p', { class: 'avail-meta', text: head }));
-      out.appendChild(el('ul', { class: 'avail-list' }, [el('li', { class: 'avail-card' }, [
-        el('div', null, [el('b', { class: 'avail-name', text: name }), el('span', { class: 'avail-sub', text: sub })]),
-        el('div', { class: 'avail-price' }, [el('b', { text: money(total) }), el('span', { text: calc })]),
-        el('a', { class: 'btn btn-book avail-btn', href: nbUrl(q.from, q.to), target: '_blank', rel: 'noopener', text: 'Book these dates' })
-      ])]));
-      var plan = paymentPlan(q.from, total);
-      if (plan) out.appendChild(el('p', { class: 'avail-meta', text: plan.text }));
-      out.appendChild(el('p', { class: 'avail-meta avail-nb' }, [
-        document.createTextNode('Opens NightsBridge with your dates filled in: see live availability and book instantly' + (units > 1 ? ' (choose ' + units + ' units there)' : '') + '. '),
-        el('a', { href: D.booking.policyUrl || 'policy.html', class: 'avail-link', text: 'Booking policy' }), document.createTextNode(' · '),
-        el('a', { href: waLink('Hello Lindani Farm, I\'d like to stay from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + ' (' + party + ' guests).'), target: '_blank', rel: 'noopener', class: 'avail-link', text: 'Questions? WhatsApp us' })
-      ]));
-    }
-    function run(q) {
-      if (NB_LIVE) return runNB(q);
-      out.innerHTML = '';
-      var n = nightsBetween(q.from, q.to), party = q.adults + q.kids;
-      var free = freeRooms(q.from, q.to);
-      var fit = free.filter(function (r) { return r.maxAdults >= q.adults && r.sleeps >= party; });
-      var head = fmtDate(q.from) + ' – ' + fmtDate(q.to) + ' · ' + n + ' night' + (n > 1 ? 's' : '') + ' · ' + party + ' guest' + (party > 1 ? 's' : '');
-      var base = { from: q.from, to: q.to, adults: q.adults, kids: q.kids };
-      if (fit.length) {
-        out.appendChild(el('div', { class: 'avail-top' }, [el('h3', { class: 'avail-title', text: (fit.length === 1 ? 'One studio is' : fit.length + ' studios are') + ' free' }),
-          D.showDemoNotice ? el('span', { class: 'tag', text: '( Sample calendar )' }) : null]));
-        out.appendChild(el('p', { class: 'avail-meta', text: head }));
-        out.appendChild(el('ul', { class: 'avail-list' }, fit.map(function (r) {
-          return card(r.name, r.bed + ' · sleeps ' + r.sleeps, stayPrice(r, q.from, q.to), n, 'Request ' + r.name,
-            Object.assign({ room: r.id }, base));
-        })));
-        out.appendChild(nudgeEl(otaSaving(Math.min.apply(null, fit.map(function (r) { return stayPrice(r, q.from, q.to); })))));
-      } else {
-        var combo = bestCombo(free, q.adults, q.kids, q.from, q.to);
-        if (combo) {
-          out.appendChild(el('h3', { class: 'avail-title', text: 'Free if you take ' + combo.rooms.length + ' studios' }));
-          out.appendChild(el('p', { class: 'avail-meta', text: head + '. No single studio sleeps ' + party + '.' }));
-          out.appendChild(el('ul', { class: 'avail-list' }, [card(combo.rooms.map(function (r) { return r.name; }).join(' + '),
-            combo.rooms.map(function (r) { return r.bed; }).join(' · '), combo.price, n, 'Request these studios',
-            Object.assign({ room: combo.rooms.map(function (r) { return r.id; }).join('+') }, base))]));
-          out.appendChild(nudgeEl(otaSaving(combo.price)));
-        } else {
-          out.appendChild(el('h3', { class: 'avail-title', text: 'Those dates are full' }));
-          out.appendChild(el('p', { class: 'avail-meta', text: head }));
-          var alt = nextOpenings(q);
-          if (alt.length) {
-            out.appendChild(el('p', { class: 'avail-meta', text: 'The next free dates for the same length of stay:' }));
-            out.appendChild(el('div', { class: 'fx-actions' }, alt.map(function (a) {
-              return el('button', { type: 'button', class: 'fx-chip', text: fmtDate(a.from) + ' – ' + fmtDate(a.to), onclick: function () {
-                f.from.value = a.from; f.to.value = a.to; picker.syncAll(); run({ from: a.from, to: a.to, adults: q.adults, kids: q.kids });
-              } });
-            })));
-          }
-          out.appendChild(el('p', { class: 'avail-meta' }, [el('a', { href: waLink('Hello Lindani Farm, do you have space from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + ' for ' + party + ' guests?'), target: '_blank', rel: 'noopener', class: 'avail-link', text: 'Ask the farm on WhatsApp' })]));
-        }
-      }
-    }
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-      var q = { from: f.from.value, to: f.to.value, adults: +f.adults.value, kids: +f.kids.value };
-      setErr(f.from, ''); setErr(f.to, '');
-      var msg = validStay(q.from, q.to);
-      if (msg) {
-        var target = !q.from || q.from < today() ? f.from : f.to;
-        setErr(target, msg); target.focus(); out.innerHTML = ''; return;
-      }
-      run(q);
-    });
-    // In NightsBridge mode the price follows every change, no button press needed
-    if (NB_LIVE) form.addEventListener('change', function () {
-      var q = { from: f.from.value, to: f.to.value, adults: +f.adults.value, kids: +f.kids.value };
-      setErr(f.from, ''); setErr(f.to, '');
-      var msg = validStay(q.from, q.to);
-      if (msg) { var target = !q.from || q.from < today() ? f.from : f.to; setErr(target, msg); out.innerHTML = ''; return; }
-      run(q);
-    });
-    // Show real results straight away for the default weekend
-    run({ from: f.from.value, to: f.to.value, adults: +f.adults.value, kids: +f.kids.value });
-  })();
-
   /* ---------- Contact page message form: hand the message to the farm ---------- */
   (function () {
     var form = $('#eform');
@@ -1056,5 +649,12 @@
   })();
 
   renderRates();
+  // booking card facts: the lowest nightly rate and the peak rate, from lodge-data.js
+  (function () {
+    var low = Math.min.apply(null, D.rooms.map(function (r) { return r.rate; }));
+    var peak = Math.max.apply(null, D.seasons.map(function (x) { return x.rate || 0; }));
+    $$('[data-fact="rate"]').forEach(function (e) { e.textContent = money(low); });
+    if (peak > low) $$('[data-fact="peak"]').forEach(function (e) { e.textContent = ' (' + money(peak) + ' in peak season)'; });
+  })();
   initLang();
 })();
