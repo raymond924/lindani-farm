@@ -6,5 +6,6 @@ Netlify publishes this repository automatically on every push to `main`.
 - `public/`: the website (pages, styles, scripts, photos) and the bookings dashboard (`/admin`)
 - `netlify/`: booking functions (requests, dashboard, availability)
 - `netlify.toml`: Netlify settings (publish `public/`, functions, headers)
+- `ghl/`: the GoHighLevel version, one block of code per page (see `ghl/README.md`)
 
 This repository is generated from the source project; edit the source, not these files.

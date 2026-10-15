@@ -156,7 +156,7 @@ window.LODGE = {
 
   // Questions for the FAQ lists on the Book and Contact pages. From the farm's booking policy and guest guide.
   faqs: [
-    { q: "How do I book?", a: "Send a booking request from this site or WhatsApp us on 083 291 6790. We'll confirm availability and send your invoice." },
+    { q: "How do I book?", a: "On NightsBridge, our booking calendar: tap any \"Book\" button on this site, choose your dates and units, and book instantly. Questions first? WhatsApp us on 083 291 6790." },
     { q: "How do I pay?", a: "By EFT. Pay a 50% deposit within 24 hours of booking and the balance 7 days before check-in, or pay in full upfront. If your stay is less than 7 days away, full payment confirms it. Use your invoice number as the reference and send the proof of payment on WhatsApp or by email.", link: "policyUrl" },
     { q: "What if I need to cancel?", a: "Cancellations must be in writing to michelle.woest@gmail.com. 30 days or more before arrival, nothing is forfeited; 21 days before, 25%; 14 days before, 50%; 7 days before, 100%. No-shows and early departures aren't refunded. Refunds are paid within 7–10 business days.", link: "policyUrl" },
     { q: "Can I change my dates?", a: "Yes, up to 30 days before check-in, subject to availability. If the new dates have different rates, the difference is charged or refunded." },
@@ -241,7 +241,7 @@ window.LODGE = {
       { id: "schools", keywords: ["school", "schools", "akademia", "boland", "gymnasium", "paarl boys", "la rochelle", "university", "stellenbosch", "college", "student"],
         answer: "Lindani is handy for parents visiting Paarl schools: Akademia and La Rochelle Girls' High are about 13–14 minutes away, Paarl Boys' High 14, Boland College 16, Paarl Gymnasium 19 and Stellenbosch University about 30." },
       { id: "wedding", keywords: ["wedding", "venue", "event", "celebration", "anniversary", "honeymoon", "birthday"],
-        answer: "Lovely! Many Winelands wedding venues are close by, so Lindani is an easy, quiet base for guests. Celebrating something? Mention it in your booking request and we'll help make it special." },
+        answer: "Lovely! Many Winelands wedding venues are close by, so Lindani is an easy, quiet base for guests. Celebrating something? Mention it in the notes when you book, or WhatsApp us, and we'll help make it special." },
       { id: "contact", keywords: ["contact", "phone", "call", "whatsapp", "email", "talk", "human", "person", "owner"],
         action: "contact",
         answer: "You can reach the farm directly on {phone} (call or WhatsApp)." },

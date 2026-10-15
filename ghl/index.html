@@ -1,0 +1,278 @@
+<!-- Lindani Farm · index page for GoHighLevel. Paste into one full-width Custom Code element. -->
+<!-- Styles, scripts, photos and fonts load from https://lindanifarms.netlify.app/ (updated from GitHub). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="https://lindanifarms.netlify.app/site.css">
+<link rel="stylesheet" href="https://lindanifarms.netlify.app/features.css">
+<style>
+/* GoHighLevel wraps custom code in its own section: let the site use the full width and height */
+.lindani-root{margin:0;padding:0;width:100%}
+body{margin:0}
+</style>
+<script>/* motion: hide what motion.js reveals, unless reduced motion; give up after 3s if motion.js never runs */(function(d){if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;d.classList.add('mo');setTimeout(function(){if(!window.LINDANI_MOTION)d.classList.remove('mo')},3000)})(document.documentElement)</script>
+<script>window.LINDANI_SITE = { assets: "https://lindanifarms.netlify.app/assets/", pages: { index: "/", studios: "/studios", farm: "/farm", explore: "/explore", book: "/book", contact: "/contact", policy: "/policy" } };</script>
+<div class="lindani-root">
+<a class="skip" href="#quick">Skip to booking</a>
+
+<header class="nav" id="nav">
+  <a href="/" class="mark" aria-label="Lindani Farm, home"><b>LINDANI</b><span>FARM</span></a>
+  <nav aria-label="Main">
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/farm" data-i18n="nav_farm">The farm</a></li>
+      <li><a href="/studios" data-i18n="nav_studios">Studios</a></li>
+      <li><a href="/explore" data-i18n="nav_explore">Explore</a></li>
+      <li><a href="/contact" data-i18n="nav_contact">Contact</a></li>
+      <li><a href="/policy" data-link="policyUrl" data-i18n="nav_policy">Booking policy</a></li>
+      <li class="lang-mob"><span class="lang"><label class="sr" for="lang-mob" data-i18n="language">Language</label><select id="lang-mob" data-lang></select></span></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <span class="lang"><label class="sr" for="lang-desk" data-i18n="language">Language</label><select id="lang-desk" data-lang></select></span>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+    <a href="/book#request" class="btn btn-book" data-i18n="book" data-book>Book your stay</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" data-piece="1" aria-labelledby="hero-title">
+    <img src="https://lindanifarms.netlify.app/assets/avenue.webp" width="1080" height="638" alt="Tree-lined farm road leading to a mountain at Lindani Farm, near Paarl" fetchpriority="high">
+    <div class="hero-inner">
+      <div>
+        <p class="label" data-i18n="hero_label">(&nbsp;Paarl · Cape Winelands&nbsp;)</p>
+        <h1 id="hero-title" class="h-xl" data-i18n-html="hero_title">Leave the city <em>at the gate.</em></h1>
+        <p class="hero-sub" data-i18n="hero_sub">Four private self-catering units just outside Paarl, interlinking in pairs so families can stay together.</p>
+      </div>
+      <a href="#quick" class="circle" aria-label="Scroll to booking">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <section class="quick" data-piece="1" id="quick" aria-labelledby="quick-title">
+    <div class="wrap"><div class="quick-card book-card">
+      <div class="bc-head">
+        <h2 id="quick-title" class="h-l" data-i18n-html="quick_title">Plan your <em>stay here</em></h2>
+        <p>Choose your dates on NightsBridge, our booking calendar: live availability for all four units and instant booking.</p>
+      </div>
+      <ul class="bc-facts">
+        <li><b data-fact="rate">R1,400</b><span>per unit per night<span data-fact="peak"></span></span></li>
+        <li><b>14:00–17:00</b><span>check-in, check-out by 10:00</span></li>
+        <li><b>2 nights</b><span>minimum when your stay includes a Friday or Saturday</span></li>
+        <li><b>Families</b><span>units sleep 2 and interlink in pairs</span></li>
+      </ul>
+      <div class="bc-actions">
+        <a class="btn btn-book" href="/book#request" data-book><span>Check availability &amp; book</span> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></a>
+        <a class="btn btn-line" href="https://wa.me/27832916790" target="_blank" rel="noopener">WhatsApp us</a>
+        <p class="bc-small">Or call <a href="tel:+27832916790">083 291 6790</a> · <a href="/policy" data-link="policyUrl">Booking policy</a></p>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="experience" data-piece="2" id="experience" aria-labelledby="exp-title">
+    <div class="wrap">
+      <h2 id="exp-title" class="h-l" data-i18n-html="exp_title">A farm stay <br><em>made for slowing down</em></h2>
+      <div class="exp-panel">
+        <div>
+          <p>Lindani is a small farm just outside Paarl, at the foot of the mountains. A tree-lined road brings you in, and the city stays behind at the gate.</p>
+          <p>There are four private self-catering studios, each with its own patio. Days are slow here: a swim in the pool under the old trees, a walk down to the dam, coffee in the garden.</p>
+        </div>
+        <div>
+          <p>Evenings are for the braai, and for watching the cliffs turn gold. Nothing to rush for, and nobody to rush you.</p>
+          <p>When you do want to go out, Avondale, Nederburg, Laborie and Franschhoek are close by. Plan less, explore more.</p>
+          <a href="/studios" class="circle-link"><span data-i18n="meet_studios">Meet the studios</span>
+            <span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+          </a>
+        </div>
+        <figure><img src="https://lindanifarms.netlify.app/assets/sunset.webp" width="1005" height="410" alt="Sun setting behind the mountains over the vineyards near Lindani Farm" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="studios" data-piece="2" id="studios" aria-labelledby="studios-title">
+    <div class="wrap">
+      <div class="studios-head">
+        <h2 id="studios-title" class="h-l" data-i18n-html="studios_title">Come home to <br><em>your own studio</em></h2>
+        <p>All the comforts of home, only better. Four private self-catering units that interlink in pairs: open the connecting door and a family of four has its own space together, with two bathrooms and two kitchenettes.</p>
+      </div>
+      <div class="studio-grid">
+        <figure class="big"><img src="https://lindanifarms.netlify.app/assets/studio-bed.webp" width="1080" height="1080" alt="Studio bedroom with white linen, patterned cushions and a kitchenette behind" loading="lazy"></figure>
+        <figure class="small"><img src="https://lindanifarms.netlify.app/assets/studio-patio.webp" width="1080" height="1080" alt="Guest relaxing on the bed with the patio doors open to the trees at sunset" loading="lazy"></figure>
+        <figure class="small"><img src="https://lindanifarms.netlify.app/assets/studio-kitchen.webp" width="1080" height="1080" alt="Studio with kitchenette, desk and en-suite bathroom" loading="lazy"></figure>
+      </div>
+      <ul class="features">
+        <li><b>Made for families</b><span>Units interlink in pairs, so the whole family stays together.</span></li>
+        <li><b>Kitchenette</b><span>Stove, microwave, fridge, toaster and air fryer. Cook what you like.</span></li>
+        <li><b>En-suite bathroom</b><span>Your own bathroom in every studio.</span></li>
+        <li><b>Private patio</b><span>Morning coffee and evening wine, outside your own door.</span></li>
+      </ul>
+      <div class="rates" id="rates" aria-labelledby="rates-title">
+        <div class="rates-head">
+          <span class="tag">(&nbsp;Per unit · per night&nbsp;)</span>
+          <h3 id="rates-title" data-i18n-html="rates_title">Studios &amp; <em>rates</em></h3>
+          <p>Nightly rates per unit, including seasonal rates. Live availability is on NightsBridge.</p>
+          <a href="/book#request" class="circle-link" data-book><span>Check availability</span>
+            <span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+          </a>
+        </div>
+        <div><div id="rates-list" class="rates-list"><p class="fx-small">Rates load with JavaScript. Call or WhatsApp 083 291 6790 for prices.</p></div><p class="nudge" data-nudge="example"></p></div>
+      </div>
+      <aside class="policy-note" aria-labelledby="policy-title">
+        <div>
+          <span class="tag">(&nbsp;Before&nbsp;you&nbsp;book&nbsp;)</span>
+          <h3 id="policy-title">Booking <em>policy</em></h3>
+          <p>A 50% deposit secures your dates, with the balance due 7 days before check-in. Cancel 30 days or more before arrival and nothing is forfeited. Please read the full policy before you book.</p>
+        </div>
+        <a class="btn btn-line" href="/policy" data-link="policyUrl"><span>Read the booking policy</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="nearby" data-piece="3" id="nearby" aria-labelledby="nearby-title">
+    <div class="wrap nearby-grid">
+      <div class="nearby-intro">
+        <h2 id="nearby-title" class="h-l" data-i18n-html="nearby_title">Taste, explore <br>and <em>wander nearby</em></h2>
+        <p>Wine farms, mountain trails, Paarl&#39;s schools and wedding venues, all just down the road. Stay close. Stay at Lindani.</p>
+        <a href="/explore" class="circle-link"><span>Explore the area</span>
+          <span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+        </a>
+      </div>
+      <ul class="places" id="places">
+        <li class="on"><div><span class="p-name">Avondale</span><span class="p-note">Wine and cheese tasting on the slopes of Paarl Mountain.</span></div><span class="tag">(&nbsp;Organic wine&nbsp;·&nbsp;10&nbsp;min&nbsp;)</span></li>
+        <li><div><span class="p-name">Nederburg</span><span class="p-note">One of the Cape's best-known wine estates, on the Paarl side of the valley.</span></div><span class="tag">(&nbsp;Wine&nbsp;·&nbsp;14&nbsp;min&nbsp;)</span></li>
+        <li><div><span class="p-name">Franschhoek</span><span class="p-note">The valley of restaurants and wine farms, an easy drive over the hill.</span></div><span class="tag">(&nbsp;Day trip&nbsp;·&nbsp;30&nbsp;min&nbsp;)</span></li>
+        <li><div><span class="p-name">Du Toitskloof Pass</span><span class="p-note">Hiking trails through the nature reserve, up to the granite domes.</span></div><span class="tag">(&nbsp;Hiking &amp; views&nbsp;·&nbsp;17&nbsp;min&nbsp;)</span></li>
+        <li><div><span class="p-name">Paarl schools</span><span class="p-note">Local food, wine and makers at Paarl's Saturday-morning markets.</span></div><span class="tag">(&nbsp;Akademia&nbsp;&amp;&nbsp;more&nbsp;·&nbsp;13–19&nbsp;min&nbsp;)</span></li>
+        <li><div><span class="p-name">Wedding venues</span><span class="p-note">Guests of a Winelands wedding can stay close to the celebration.</span></div><span class="tag">(&nbsp;Wine&nbsp;estates&nbsp;·&nbsp;15–25&nbsp;min&nbsp;)</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" data-piece="3" aria-labelledby="band-title">
+    <figure><img src="https://lindanifarms.netlify.app/assets/golden.webp" width="1080" height="551" alt="Guest looking out over the valley and mountains in golden-hour light" loading="lazy"></figure>
+    <div class="band-inner">
+      <div class="band-copy">
+        <h2 id="band-title" class="h-l" data-i18n-html="band_title">Golden hours, pool days <em>and braai nights</em></h2>
+        <p>Mountain air and still water. Cool off in the dam and watch the cliffs turn gold, then light the fire. Lindani is a place for the long afternoons you never seem to get at home.</p>
+        <a href="/farm" class="circle-link"><span data-i18n="see_farm">See the farm</span>
+          <span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="farm" data-piece="3" id="on-the-farm" aria-labelledby="farm-title">
+    <div class="wrap">
+      <div class="farm-head">
+        <h2 id="farm-title" class="h-l" data-i18n-html="farm_title">Days <em>on the farm</em></h2>
+        <span class="tag">(&nbsp;Scroll&nbsp;)</span>
+      </div>
+      <div class="stack" id="stack">
+        <article class="card">
+          <div class="card-text"><span class="tag">(&nbsp;01&nbsp;·&nbsp;The pool&nbsp;)</span><h3>Long, lazy afternoons</h3><p>A sparkling pool in the shade of the old trees. Bring a book, a towel and nowhere else to be.</p></div>
+          <figure><img src="https://lindanifarms.netlify.app/assets/pool.webp" width="1080" height="669" alt="Swimming pool shaded by a large old tree" loading="lazy" style="object-position:50% 100%"></figure>
+        </article>
+        <article class="card">
+          <div class="card-text"><span class="tag">(&nbsp;02&nbsp;·&nbsp;The dam&nbsp;)</span><h3>Mountain air, still water</h3><p>Walk down to the dam in the late afternoon, cool off, and watch the light climb the cliffs.</p></div>
+          <figure><img src="https://lindanifarms.netlify.app/assets/dam.webp" width="1080" height="702" alt="The farm dam with reeds and wildflowers at golden hour" loading="lazy"></figure>
+        </article>
+        <article class="card">
+          <div class="card-text"><span class="tag">(&nbsp;03&nbsp;·&nbsp;The garden&nbsp;)</span><h3>Coffee by day, braai by night</h3><p>Garden spots with a built-in braai, made for good company and slow evenings under the trees.</p></div>
+          <figure><img src="https://lindanifarms.netlify.app/assets/braai.webp" width="1080" height="615" alt="Garden seating area with a brick built-in braai under the trees" loading="lazy"></figure>
+        </article>
+        <article class="card">
+          <div class="card-text"><span class="tag">(&nbsp;04&nbsp;·&nbsp;The studios&nbsp;)</span><h3>Your farm escape starts here</h3><p>Four studios open onto the lawn, each with its own patio for sundowners as the farm goes quiet.</p></div>
+          <figure><img src="https://lindanifarms.netlify.app/assets/cottages.webp" width="1080" height="491" alt="The four studios with lit patios opening onto a green lawn" loading="lazy"></figure>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="tips" id="tips" aria-labelledby="tips-title">
+    <div class="tips-panel">
+      <div class="tips-head">
+        <h2 id="tips-title" class="h-l">Stories <em>&amp; tips</em></h2>
+        <div>
+          <p>Planning your stay? Here's what guests ask us most, from arriving to the schools nearby.</p>
+          <a href="/book#faq-title" class="circle-link"><span>All questions</span>
+            <span class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span>
+          </a>
+        </div>
+      </div>
+      <ul class="tips-list">
+        <li><a href="/book#how-title" class="tip">
+          <figure><img src="https://lindanifarms.netlify.app/assets/cottages.webp" width="1080" height="491" alt="The four units with lit patios on the lawn" loading="lazy"></figure>
+          <div><span class="tag">(&nbsp;Arriving&nbsp;)</span><h3>Self check-in, <br><em>step by step</em></h3></div>
+        </a></li>
+        <li><a href="/explore?type=school" class="tip">
+          <figure><img src="https://lindanifarms.netlify.app/assets/avenue.webp" width="1080" height="638" alt="The tree-lined road into the farm" loading="lazy"></figure>
+          <div><span class="tag">(&nbsp;Parents&nbsp;)</span><h3>Visiting Paarl&#39;s <br><em>schools</em></h3></div>
+        </a></li>
+        <li><a href="/farm#reviews" class="tip">
+          <figure><img src="https://lindanifarms.netlify.app/assets/dam.webp" width="1080" height="702" alt="A guest at the farm dam in golden light" loading="lazy"></figure>
+          <div><span class="tag">(&nbsp;Guests&nbsp;)</span><h3>What our <br><em>guests say</em></h3></div>
+        </a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="enquire" data-piece="4" id="enquire" aria-labelledby="enq-title">
+    <img src="https://lindanifarms.netlify.app/assets/avenue.webp" width="1080" height="638" alt="" loading="lazy">
+    <div class="enquire-inner">
+      <p class="tag tag-light">(&nbsp;Book&nbsp;direct&nbsp;)</p>
+      <h2 id="enq-title" class="h-l" data-i18n-html="enq_title">Your farm escape <em>starts here</em></h2>
+      <p class="lede">See live availability and book instantly on NightsBridge, our booking calendar. Or call or WhatsApp reservations on <a href="tel:+27832916790" style="text-decoration:underline;text-underline-offset:3px">083 291 6790</a>.</p>
+      <div class="cta-row">
+        <a class="btn btn-book" href="/book#request" data-book><span>Check dates &amp; book</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
+        </a>
+        <a class="btn btn-ghost" href="https://wa.me/27832916790" target="_blank" rel="noopener">WhatsApp us</a>
+      </div>
+      <p class="cta-policy"><a href="/policy" data-link="policyUrl">Read our booking policy</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer" id="site-footer">
+  <div class="f-top">
+    <a href="/" class="mark" aria-label="Lindani Farm, home"><b>LINDANI</b><span>FARM</span></a>
+    <a href="#top" class="circle to-top" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg>
+    </a>
+  </div>
+  <div class="f-mid">
+    <div class="f-contact">
+      <a href="tel:+27832916790">+27 (0)83 291 6790</a>
+      <a href="mailto:" id="f-email" hidden></a>
+      <small>Call or WhatsApp · just outside Paarl, Western Cape</small>
+    </div>
+    <ul class="f-links">
+      <li><a href="/farm">The farm</a></li>
+      <li><a href="/studios">Studios</a></li>
+      <li><a href="/explore">Explore</a></li>
+      <li><a href="/contact">Contact</a></li>
+      <li><a href="/book#request" data-book>Book your stay</a></li>
+      <li><a href="/policy" data-link="policyUrl">Booking policy</a></li>
+    </ul>
+  </div>
+  <div class="f-bot">
+    <span>© <span id="yr">2026</span> Lindani Farm, Paarl</span>
+    <div class="f-social">
+      <a href="https://www.instagram.com/lindanifarm/" aria-label="Lindani Farm on Instagram" rel="noopener" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+      </a>
+      <a href="https://wa.me/27832916790" aria-label="WhatsApp Lindani Farm" rel="noopener" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+</div>
+<script src="https://lindanifarms.netlify.app/site.js"></script>
+<script src="https://lindanifarms.netlify.app/lodge-data.js" defer></script>
+<script src="https://lindanifarms.netlify.app/features.js" defer></script>
+<script src="https://lindanifarms.netlify.app/motion.js" defer></script>
