@@ -649,6 +649,16 @@
   })();
 
   renderRates();
+  // Netlify's "Powered by Netlify" badge sits in the bottom-right corner, over the chat
+  // button: when it appears, lift the chat above it (see .has-nl-badge in features.css)
+  (function () {
+    var root = document.documentElement;
+    function check() { if (document.getElementById('nl-badge-frame')) { root.classList.add('has-nl-badge'); return true; } }
+    if (check() || !window.MutationObserver) return;
+    var mo = new MutationObserver(function () { if (check()) mo.disconnect(); });
+    mo.observe(document.body, { childList: true, subtree: true });
+    setTimeout(function () { mo.disconnect(); }, 15000);
+  })();
   // booking card facts: the lowest nightly rate and the peak rate, from lodge-data.js
   (function () {
     var low = Math.min.apply(null, D.rooms.map(function (r) { return r.rate; }));

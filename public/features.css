@@ -136,3 +136,12 @@ html.dp-lock,html.dp-lock body{overflow:hidden}
 .enq-send .fx-btn-ghost:hover{border-color:#fff}
 .enq-send .fx-copy{color:var(--ink)}
 .enq-send[hidden]{display:none}
+
+/* lift the chat above Netlify's "Powered by Netlify" badge (64px tall, bottom right) */
+.has-nl-badge .fx-chat{bottom:calc(84px + env(safe-area-inset-bottom, 0px))}
+@media (max-width:760px){
+  .has-nl-badge .fx-chat{bottom:calc(80px + env(safe-area-inset-bottom, 0px))}
+  .has-nl-badge .fx-chat.is-open{bottom:0}
+  .has-nl-badge .fx-panel{bottom:72px;height:min(calc(88dvh - 72px),648px);border-radius:16px}
+  .has-nl-badge .footer{margin-bottom:156px}
+}
