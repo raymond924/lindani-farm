@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact · Lindani Farm</title>
+<meta name="description" content="Contact Lindani Farm near Paarl by phone or WhatsApp, find directions and drive times, or send an enquiry.">
+<link rel="preload" href="assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="features.css">
+<script>/* motion: hide what motion.js reveals, unless reduced motion; give up after 3s if motion.js never runs */(function(d){if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;d.classList.add('mo');setTimeout(function(){if(!window.LINDANI_MOTION)d.classList.remove('mo')},3000)})(document.documentElement)</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="nav">
+  <a href="index.html" class="mark" aria-label="Lindani Farm, home"><b>LINDANI</b><span>FARM</span></a>
+  <nav aria-label="Main">
+    <ul class="nav-links" id="nav-links">
+      <li><a href="farm.html" data-i18n="nav_farm">The farm</a></li>
+      <li><a href="studios.html" data-i18n="nav_studios">Studios</a></li>
+      <li><a href="explore.html" data-i18n="nav_explore">Explore</a></li>
+      <li><a href="contact.html" data-i18n="nav_contact">Contact</a></li>
+      <li class="lang-mob"><span class="lang"><label class="sr" for="lang-mob" data-i18n="language">Language</label><select id="lang-mob" data-lang></select></span></li>
+    </ul>
+  </nav>
+  <div class="nav-right">
+    <span class="lang"><label class="sr" for="lang-desk" data-i18n="language">Language</label><select id="lang-desk" data-lang></select></span>
+    <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
+    </button>
+    <a href="book.html" class="btn btn-book" data-i18n="book">Book your stay</a>
+  </div>
+</header>
+
+<main id="main">
+<span id="top"></span>
+  <section class="hero is-page has-card" aria-labelledby="page-title">
+    <img src="assets/braai.webp" width="1080" height="700" alt="Garden seating with a built-in braai under the trees" fetchpriority="high">
+    <div class="hero-inner">
+      <div>
+        <p class="label">(&nbsp;Contact&nbsp;)</p>
+        <h1 id="page-title" class="h-xl" data-i18n-html="page_contact">Find us, <em>talk to us</em></h1>
+        <p class="hero-sub">Call or WhatsApp the farm, or send an enquiry and we’ll come back to you.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick" id="quick" aria-labelledby="quick-title">
+    <div class="wrap"><div class="quick-card">
+      <h2 id="quick-title" class="h-l" data-i18n-html="quick_title">Plan your <em>stay here</em></h2>
+      <form class="qform" id="qform" novalidate aria-describedby="qnote">
+        <div class="field"><label for="q-from">Arrive</label><input id="q-from" name="from" type="date" required></div>
+        <div class="field"><label for="q-to">Leave</label><input id="q-to" name="to" type="date" required></div>
+        <div class="field"><label for="q-adults">Adults</label><select id="q-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div class="field"><label for="q-kids">Children</label><select id="q-kids" name="kids"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        <button class="btn btn-book" type="submit"><span data-i18n="check_dates">Check dates</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+      <p class="form-note" id="qnote" role="status">Prefer to talk? Call or WhatsApp reservations on <a href="tel:+27832916790">083 291 6790</a>.</p>
+      <div class="avail-out" id="avail-out" aria-live="polite"></div>
+    </div></div>
+  </section>
+
+  <section class="section" aria-labelledby="ways-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="ways-title" class="h-l">Ways to <em>reach us</em></h2>
+        <p>WhatsApp is usually the quickest way to get an answer.</p>
+      </div>
+      <ul class="contact-cards" id="contact-cards"></ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="dir-title">
+    <div class="wrap two-col">
+      <div>
+        <h2 id="dir-title" class="h-l">Getting <em>here</em></h2>
+        <p class="lead" id="directions-text"></p>
+        <div id="map-link"></div>
+      </div>
+      <div class="list-panel">
+        <h3>Drive <em>times</em></h3>
+        <dl class="dist-list" id="distance-list"></dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cfaq-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="cfaq-title" class="h-l">Questions, <em>answered</em></h2></div>
+      <div class="faq" id="faq-list"></div>
+    </div>
+  </section>
+
+  <section class="enquire" id="enquire" aria-labelledby="enq-title">
+    <img src="assets/avenue.webp" width="1080" height="638" alt="" loading="lazy">
+    <div class="enquire-inner">
+      <p class="tag tag-light">(&nbsp;Enquire&nbsp;)</p>
+      <h2 id="enq-title" class="h-l" data-i18n-html="enq_title">Your farm escape <em>starts here</em></h2>
+      <p class="lede">Tell us your dates and we'll come back to you with availability.</p>
+      <form class="eform" id="eform" novalidate>
+        <div class="field"><label for="e-name">Full name*</label><input id="e-name" name="name" placeholder="Full name…" autocomplete="name" required></div>
+        <div class="field"><label for="e-contact">Phone or email*</label><input id="e-contact" name="contact" placeholder="So we can reply…" autocomplete="email" required></div>
+        <div class="field"><label for="e-in">Arrival*</label><input id="e-in" name="arrival" type="date" required></div>
+        <div class="field"><label for="e-out">Departure*</label><input id="e-out" name="departure" type="date" required></div>
+        <div class="field"><label for="e-adults">Adults</label><select id="e-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div class="field"><label for="e-kids">Children</label><select id="e-kids" name="kids"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
+        <div class="field full"><label for="e-msg">Anything we should know?</label><textarea id="e-msg" name="message" placeholder="Celebrating something, travelling for a wedding, arriving late…"></textarea></div>
+        <div class="eform-foot">
+          <p class="form-note" id="enote" role="status">Your enquiry goes to the farm on WhatsApp or by email.</p>
+          <button class="btn btn-book" type="submit"><span data-i18n="send_enquiry">Send enquiry</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+
+</main>
+
+<footer class="footer" id="site-footer">
+  <div class="f-top">
+    <a href="index.html" class="mark" aria-label="Lindani Farm, home"><b>LINDANI</b><span>FARM</span></a>
+    <a href="#top" class="circle to-top" aria-label="Back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg>
+    </a>
+  </div>
+  <div class="f-mid">
+    <div class="f-contact">
+      <a href="tel:+27832916790">+27 (0)83 291 6790</a>
+      <a href="mailto:" id="f-email" hidden></a>
+      <small>Call or WhatsApp · just outside Paarl, Western Cape</small>
+    </div>
+    <ul class="f-links">
+      <li><a href="farm.html">The farm</a></li>
+      <li><a href="studios.html">Studios</a></li>
+      <li><a href="explore.html">Explore</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="book.html">Book your stay</a></li>
+    </ul>
+  </div>
+  <div class="f-bot">
+    <span>© <span id="yr">2026</span> Lindani Farm, Paarl</span>
+    <div class="f-social">
+      <a href="https://www.instagram.com/lindanifarm/" aria-label="Lindani Farm on Instagram" rel="noopener" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
+      </a>
+      <a href="https://wa.me/27832916790" aria-label="WhatsApp Lindani Farm" rel="noopener" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 20l1.3-3.8A8 8 0 1 1 8 19z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-2-2l.8-1-1-2z"/></svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script src="lodge-data.js" defer></script>
+<script src="features.js" defer></script>
+<script src="assets/vendor/lenis.min.js" defer></script>
+<script src="motion.js" defer></script>
+</body>
+</html>
