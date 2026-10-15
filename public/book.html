@@ -33,13 +33,13 @@
     <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
     </button>
-    <a href="book.html" class="btn btn-book" data-i18n="book">Book your stay</a>
+    <a href="book.html#request" class="btn btn-book" data-i18n="book">Book your stay</a>
   </div>
 </header>
 
 <main id="main">
 <span id="top"></span>
-  <section class="hero is-page has-card" aria-labelledby="page-title">
+  <section class="hero is-page" aria-labelledby="page-title">
     <img src="assets/dam.webp" width="1080" height="700" alt="A guest at the farm dam in golden light" fetchpriority="high">
     <div class="hero-inner">
       <div>
@@ -48,23 +48,6 @@
         <p class="hero-sub">Pick your dates, choose a studio and send your request straight to the farm.</p>
       </div>
     </div>
-  </section>
-
-  <section class="quick" id="quick" aria-labelledby="quick-title">
-    <div class="wrap"><div class="quick-card">
-      <h2 id="quick-title" class="h-l">Check <em>your dates</em></h2>
-      <form class="qform" id="qform" novalidate aria-describedby="qnote">
-        <div class="field"><label for="q-from">Arrive</label><input id="q-from" name="from" type="date" required></div>
-        <div class="field"><label for="q-to">Leave</label><input id="q-to" name="to" type="date" required></div>
-        <div class="field"><label for="q-adults">Adults</label><select id="q-adults" name="adults"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
-        <div class="field"><label for="q-kids">Children</label><select id="q-kids" name="kids"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select></div>
-        <button class="btn btn-book" type="submit"><span data-i18n="check_dates">Check dates</span>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
-        </button>
-      </form>
-      <p class="form-note" id="qnote" role="status">Prefer to talk? Call or WhatsApp reservations on <a href="tel:+27832916790">083 291 6790</a>.</p>
-      <div class="avail-out" id="avail-out" aria-live="polite"></div>
-    </div></div>
   </section>
 
   <section class="section" aria-labelledby="req-title" id="request">
@@ -153,7 +136,7 @@
       <li><a href="studios.html">Studios</a></li>
       <li><a href="explore.html">Explore</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="book.html">Book your stay</a></li>
+      <li><a href="book.html#request">Book your stay</a></li>
     </ul>
   </div>
   <div class="f-bot">
@@ -172,7 +155,6 @@
 <script src="site.js"></script>
 <script src="lodge-data.js" defer></script>
 <script src="features.js" defer></script>
-<script src="assets/vendor/lenis.min.js" defer></script>
 <script src="motion.js" defer></script>
 </body>
 </html>

@@ -448,7 +448,7 @@
      BOOKING CONCIERGE (chat widget)
      ===================================================================== */
   var chat = (function () {
-    var KEY = 'lindani-concierge-v1';
+    var KEY = 'lindani-concierge-v2';
     var S = store.get('sessionStorage', KEY) || { open: false, msgs: [] };
     var api = { built: false };
     var root, panel, log, input, qrRow, launcher, titleEl, closeBtn, sendBtn;
@@ -523,7 +523,7 @@
     }
     function actionsRow(list) {
       return el('div', { class: 'fx-actions' }, list.map(function (a) {
-        if (a.href) return el('a', { class: 'fx-chip', href: a.href, target: a.href.charAt(0) === '#' ? null : '_blank', rel: 'noopener', text: a.label,
+        if (a.href) return el('a', { class: 'fx-chip', href: a.href, target: /^https?:/.test(a.href) ? '_blank' : null, rel: 'noopener', text: a.label,
           onclick: a.href.charAt(0) === '#' ? function () { if (window.innerWidth < 760) setOpen(false); } : null });
         return el('button', { type: 'button', class: 'fx-chip', text: a.label, onclick: function () { userSays(a.label, a.intent); } });
       }));
@@ -532,10 +532,6 @@
     function draw(m) {
       switch (m.kind) {
         case 'rooms': return bubble('bot', [textNode(m.text), roomsList(), actionsRow([{ label: t('qr_dates'), intent: 'dates' }, { label: t('qr_book'), intent: 'book' }])]);
-        case 'dateForm': return bubble('bot', [textNode(m.text), dateForm(m)], 'fx-wide');
-        case 'dateResult': return bubble('bot', dateResult(m), 'fx-wide');
-        case 'bookForm': return bubble('bot', [textNode(m.text), bookForm(m)], 'fx-wide');
-        case 'bookSummary': return bubble('bot', bookSummary(m), 'fx-wide');
         case 'actions': return bubble('bot', [textNode(m.text), actionsRow(m.actions)]);
         default: return bubble(m.from, [textNode(m.text)]);
       }
@@ -546,10 +542,6 @@
       var dots = bubble('bot', [el('span', { class: 'fx-typing', 'aria-label': 'Typing' }, [el('i'), el('i'), el('i')])]);
       setTimeout(function () { dots.remove(); draw(m); }, 380);
     }
-    function removeKind(kind) {
-      S.msgs = S.msgs.filter(function (m) { return m.kind !== kind; });
-      $$('.fx-form[data-kind="' + kind + '"]', log).forEach(function (f) { f.closest('.fx-msg').remove(); });
-    }
 
     function roomsList() {
       return el('ul', { class: 'fx-rooms' }, D.rooms.map(function (r) {
@@ -558,192 +550,15 @@
       }));
     }
 
-    /* --- date checker --- */
-    function field(label, input) {
-      var id = input.id || (input.id = nid('fx'));
-      return el('div', { class: 'fx-field' }, [el('label', { for: id, text: label }), input]);
-    }
-    function numSelect(name, min, max, val) {
-      var s = el('select', { name: name });
-      for (var i = min; i <= max; i++) s.appendChild(el('option', { value: i, text: String(i), selected: i === val }));
-      return s;
-    }
-    function dateForm(m) {
-      var v = m.values || {};
-      var t0 = today();
-      var inp = el('input', { type: 'date', name: 'from', required: true, min: t0, value: v.from || '' });
-      var out = el('input', { type: 'date', name: 'to', required: true, min: addDays(t0, 1), value: v.to || '' });
-      inp.addEventListener('change', function () { if (inp.value) { out.min = addDays(inp.value, 1); if (!out.value || out.value <= inp.value) out.value = addDays(inp.value, D.booking.minNights); } });
-      var err = el('p', { class: 'fx-err', role: 'alert' });
-      var f = el('form', { class: 'fx-form', 'data-kind': 'dateForm', novalidate: true }, [
-        el('div', { class: 'fx-grid' }, [field('Arrive', inp), field('Leave', out), field('Adults', numSelect('adults', 1, 8, v.adults || 2)), field('Children', numSelect('kids', 0, 6, v.kids || 0))]),
-        err,
-        el('button', { type: 'submit', class: 'fx-btn fx-btn-book', text: 'Check availability' })
-      ]);
-      picker.attach(inp, out);
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var q = { from: inp.value, to: out.value, adults: +f.elements.adults.value, kids: +f.elements.kids.value };
-        var msg = validStay(q.from, q.to);
-        if (msg) { err.textContent = msg; return; }
-        removeKind('dateForm');
-        push({ from: 'me', text: fmtDate(q.from) + ' – ' + fmtDate(q.to) + ', ' + q.adults + ' adult' + (q.adults > 1 ? 's' : '') + (q.kids ? ', ' + q.kids + ' child' + (q.kids > 1 ? 'ren' : '') : '') }, true);
-        push({ from: 'bot', kind: 'dateResult', q: q });
-      });
-      return f;
-    }
-    function dateResult(m) {
-      var q = m.q, n = nightsBetween(q.from, q.to), party = q.adults + q.kids;
-      var free = freeRooms(q.from, q.to);
-      var single = free.filter(function (r) { return r.maxAdults >= q.adults && r.sleeps >= party; });
-      var kids = [];
-      if (single.length) {
-        kids.push(textNode('Good news! ' + (single.length === 1 ? 'One studio is' : single.length + ' studios are') + ' free for ' + n + ' nights:'));
-        kids.push(el('ul', { class: 'fx-rooms' }, single.map(function (r) {
-          var p = stayPrice(r, q.from, q.to);
-          return el('li', null, [el('b', { text: r.name + ': ' + money(p) }), el('span', { text: r.bed + '. ' + money(Math.round(p / n)) + ' per night on average.' }),
-            el('button', { type: 'button', class: 'fx-chip', text: 'Request ' + r.name, onclick: function () { startBooking({ from: q.from, to: q.to, adults: q.adults, kids: q.kids, room: r.id }); } })]);
-        })));
-        var cheapest = Math.min.apply(null, single.map(function (r) { return stayPrice(r, q.from, q.to); }));
-        kids.push(nudgeEl(otaSaving(cheapest)));
-      } else {
-        var combo = bestCombo(free, q.adults, q.kids, q.from, q.to);
-        if (combo) {
-          kids.push(textNode('No single studio fits ' + party + ' guests, but this combination is free: ' + combo.rooms.map(function (r) { return r.name; }).join(' + ') + ', ' + money(combo.price) + ' for ' + n + ' nights.'));
-          kids.push(nudgeEl(otaSaving(combo.price)));
-          kids.push(actionsRow([{ label: 'Request these studios', intent: 'book' }]));
-          S.lastQuery = { from: q.from, to: q.to, adults: q.adults, kids: q.kids, room: combo.rooms.map(function (r) { return r.id; }).join('+') };
-        } else {
-          kids.push(textNode('Sorry, those dates are full for ' + party + ' guest' + (party > 1 ? 's' : '') + '.'));
-          var alt = nextOpenings(q);
-          if (alt.length) {
-            kids.push(textNode('The next openings for the same length of stay:'));
-            kids.push(el('div', { class: 'fx-actions' }, alt.map(function (a) {
-              return el('button', { type: 'button', class: 'fx-chip', text: fmtDate(a.from) + ' – ' + fmtDate(a.to),
-                onclick: function () { push({ from: 'me', text: fmtDate(a.from) + ' – ' + fmtDate(a.to) }, true); push({ from: 'bot', kind: 'dateResult', q: { from: a.from, to: a.to, adults: q.adults, kids: q.kids } }); } });
-            })));
-          }
-          kids.push(actionsRow([{ label: 'Try other dates', intent: 'dates' }, { label: 'Ask on WhatsApp', href: waLink('Hello Lindani Farm, do you have space from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + ' for ' + party + ' guests?') }]));
-        }
+    /* --- booking: one place to book, the Book page --- */
+    function goBook(text) {
+      if (bookHere) {
+        push({ from: 'bot', text: text + ' The form is right here on this page.' });
+        bookHere({});
+        if (window.innerWidth < 760) setOpen(false);
+        return;
       }
-      kids.push(el('p', { class: 'fx-small', text: 'Sample calendar. The farm confirms availability.' }));
-      return kids;
-    }
-
-    /* --- booking request --- */
-    function startBooking(prefill) {
-      push({ from: 'bot', kind: 'bookForm', text: fill(intentById('book').answer, answerVars()), values: prefill || S.lastQuery || {} });
-    }
-    function bookForm(m) {
-      var v = m.values || {}, t0 = today();
-      var name = el('input', { name: 'name', autocomplete: 'name', required: true, value: v.name || '' });
-      var email = el('input', { name: 'email', type: 'email', autocomplete: 'email', required: true, value: v.email || '' });
-      var phone = el('input', { name: 'phone', type: 'tel', autocomplete: 'tel', required: true, value: v.phone || '' });
-      var from = el('input', { name: 'from', type: 'date', required: true, min: t0, value: v.from || '' });
-      var to = el('input', { name: 'to', type: 'date', required: true, min: addDays(t0, 1), value: v.to || '' });
-      from.addEventListener('change', function () { if (from.value) { to.min = addDays(from.value, 1); if (!to.value || to.value <= from.value) to.value = addDays(from.value, D.booking.minNights); } });
-      var room = el('select', { name: 'room' }, [el('option', { value: '', text: 'Not sure yet, please suggest' })].concat(
-        D.rooms.map(function (r) { return el('option', { value: r.id, text: r.name + ' (sleeps ' + r.sleeps + ')', selected: v.room === r.id }); })));
-      if (v.room && v.room.indexOf('+') > 0) room.appendChild(el('option', { value: v.room, selected: true, text: v.room.split('+').map(function (id) { return D.rooms.filter(function (r) { return r.id === id; })[0].name; }).join(' + ') }));
-      var notes = el('textarea', { name: 'notes', rows: 2, placeholder: 'Arrival time, celebrations, questions…' });
-      notes.value = v.notes || '';
-      var err = el('p', { class: 'fx-err', role: 'alert' });
-      var f = el('form', { class: 'fx-form', 'data-kind': 'bookForm', novalidate: true }, [
-        el('div', { class: 'fx-grid' }, [
-          field('Full name', name), field('Email', email), field('Phone / WhatsApp', phone), field('Studio', room),
-          field('Arrive', from), field('Leave', to), field('Adults', numSelect('adults', 1, 8, v.adults || 2)), field('Children', numSelect('kids', 0, 6, v.kids || 0))
-        ]),
-        field('Notes (optional)', notes),
-        err,
-        el('button', { type: 'submit', class: 'fx-btn fx-btn-book', text: 'Review my request' })
-      ]);
-      picker.attach(from, to);
-      f.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var r = {
-          name: name.value.trim(), email: email.value.trim(), phone: phone.value.trim(), from: from.value, to: to.value,
-          adults: +f.elements.adults.value, kids: +f.elements.kids.value, room: room.value, notes: notes.value.trim()
-        };
-        var bad = !r.name ? [name, 'Add your name.'] :
-          !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email) ? [email, 'Add a valid email address.'] :
-          r.phone.replace(/\D/g, '').length < 9 ? [phone, 'Add a phone number we can WhatsApp.'] : null;
-        var dateMsg = validStay(r.from, r.to);
-        if (!bad && dateMsg) bad = [from, dateMsg];
-        if (!bad && r.room && r.room.indexOf('+') < 0) {
-          var rm = D.rooms.filter(function (x) { return x.id === r.room; })[0];
-          if (rm.maxAdults < r.adults || rm.sleeps < r.adults + r.kids) bad = [room, rm.name + ' sleeps ' + rm.sleeps + '. Pick another studio or leave it to us.'];
-          else if (!isFree(rm.id, r.from, r.to)) bad = [room, rm.name + ' looks booked for those dates. Try another studio or other dates.'];
-        }
-        $$('[aria-invalid]', f).forEach(function (x) { x.removeAttribute('aria-invalid'); });
-        if (bad) { err.textContent = bad[1]; bad[0].setAttribute('aria-invalid', 'true'); bad[0].focus(); return; }
-        removeKind('bookForm');
-        push({ from: 'me', text: 'Review my booking request' }, true);
-        push({ from: 'bot', kind: 'bookSummary', r: r });
-      });
-      return f;
-    }
-    function roomNames(id) {
-      if (!id) return 'Not chosen (please suggest)';
-      return id.split('+').map(function (x) { var r = D.rooms.filter(function (y) { return y.id === x; })[0]; return r ? r.name : x; }).join(' + ');
-    }
-    function requestText(r, est) {
-      return [
-        'BOOKING REQUEST (not yet confirmed), sent from the Lindani Farm website',
-        'Name: ' + r.name, 'Email: ' + r.email, 'Phone: ' + r.phone,
-        'Dates: ' + fmtDate(r.from) + ' to ' + fmtDate(r.to) + ' (' + nightsBetween(r.from, r.to) + ' nights)',
-        'Guests: ' + r.adults + ' adult' + (r.adults > 1 ? 's' : '') + (r.kids ? ', ' + r.kids + ' child' + (r.kids > 1 ? 'ren' : '') : ''),
-        'Studio: ' + roomNames(r.room),
-        est ? 'Website estimate: ' + money(est) : null,
-        r.notes ? 'Notes: ' + r.notes : null,
-        '', 'Please confirm availability and send the invoice. Thank you!'
-      ].filter(function (x) { return x !== null; }).join('\n');
-    }
-    function bookSummary(m) {
-      var r = m.r, n = nightsBetween(r.from, r.to), est = 0;
-      if (r.room) r.room.split('+').forEach(function (id) { var rm = D.rooms.filter(function (x) { return x.id === id; })[0]; if (rm) est += stayPrice(rm, r.from, r.to); });
-      var dl = el('dl', { class: 'fx-summary' }, [
-        ['Name', r.name], ['Email', r.email], ['Phone', r.phone],
-        ['Dates', fmtDate(r.from) + ' – ' + fmtDate(r.to) + ' (' + n + ' nights)'],
-        ['Guests', r.adults + ' adult' + (r.adults > 1 ? 's' : '') + (r.kids ? ', ' + r.kids + ' child' + (r.kids > 1 ? 'ren' : '') : '')],
-        ['Studio', roomNames(r.room)], est ? ['Estimate', money(est)] : null, r.notes ? ['Notes', r.notes] : null
-      ].filter(Boolean).map(function (p) { return el('div', null, [el('dt', { text: p[0] }), el('dd', { text: p[1] })]); }));
-      var status = el('p', { class: 'fx-small', role: 'status' });
-      var subject = 'Booking request: ' + fmtDate(r.from) + ' to ' + fmtDate(r.to), text = requestText(r, est);
-      if (m.sent) {
-        return [el('p', { class: 'fx-badge', text: 'Request received · not yet confirmed' }), receivedNote(r.name), dl, guideNote(),
-          el('p', { class: 'fx-small', text: 'Want a quicker answer? Send it on WhatsApp too:' }), shareButtons(subject, text, status), status];
-      }
-      var live = D.booking.liveRequests !== false && location.protocol !== 'file:';
-      var out = [
-        el('p', { class: 'fx-badge', text: 'Booking request · not a confirmed booking' }),
-        textNode(live ? 'Here\'s your request. Send it to the farm and they\'ll confirm availability and the deposit.'
-          : 'Here\'s your request. Send it to the farm on WhatsApp or by email, and they\'ll confirm availability and send your invoice.'),
-        dl
-      ];
-      if (est) out.push(nudgeEl(otaSaving(est)));
-      if (live) {
-        var go = el('button', { type: 'button', class: 'fx-btn fx-btn-book', text: 'Send request to the farm' });
-        go.addEventListener('click', function () {
-          go.disabled = true; status.textContent = 'Sending…';
-          sendRequest(r, est, 'chat').then(function (j) {
-            m.sent = j.id; save();
-            var b = go.closest('.fx-msg'), kids = bookSummary(m);
-            b.innerHTML = ''; kids.forEach(function (k) { b.appendChild(k); });
-            b.setAttribute('tabindex', '-1'); b.focus();
-          }, function () {
-            go.disabled = false;
-            status.textContent = 'The booking system didn\'t answer. Please send your request on WhatsApp or by email below.';
-          });
-        });
-        out.push(go);
-        out.push(el('p', { class: 'fx-small', text: 'Or send it yourself:' }));
-      }
-      out.push(shareButtons(subject, text, status));
-      if (!D.contact.email) out.push(el('p', { class: 'fx-small', text: 'The lodge email isn\'t set yet (placeholder), so the email opens without an address.' }));
-      out.push(status);
-      out.push(guideNote());
-      out.push(actionsRow([{ label: 'Edit request', intent: 'book' }]));
-      return out;
+      push({ from: 'bot', kind: 'actions', text: text, actions: [{ label: 'Check dates & book', href: 'book.html#request' }] });
     }
 
     /* --- responding --- */
@@ -751,8 +566,8 @@
       var vars = answerVars();
       switch (it.action) {
         case 'rooms': return push({ from: 'bot', kind: 'rooms', text: fill(it.answer, vars) });
-        case 'dates': return push({ from: 'bot', kind: 'dateForm', text: fill(it.answer, vars), values: S.lastQuery || {} });
-        case 'book': return startBooking();
+        case 'dates':
+        case 'book': return goBook(fill(it.answer, vars));
         case 'activities':
           return push({ from: 'bot', kind: 'actions', text: fill(it.answer, vars),
             actions: [{ label: t('qr_dates'), intent: 'dates' }, { label: 'Ask about activities on WhatsApp', href: waLink('Hello Lindani Farm, what can we do during our stay?') }] });
@@ -856,7 +671,6 @@
       } else launcher.focus();
     }
     api.open = function (intent) { setOpen(true, intent); };
-    api.book = function (prefill) { setOpen(true); startBooking(prefill); };
 
     root = el('div', { class: 'fx-chat', id: 'fx-chat' });
     launcher = el('button', { type: 'button', class: 'fx-launch', 'aria-expanded': 'false', 'aria-controls': 'fx-panel' }, [
@@ -878,7 +692,7 @@
     if (q.room && !D.rooms.some(function (r) { return r.id === q.room; })) delete q.room;
     return q;
   })();
-  // The book page has its own request form; elsewhere "Request" opens the concierge
+  // On the Book page "Request" fills in the form there; elsewhere it opens the Book page
   var bookHere = null;
 
   /* =====================================================================
@@ -912,7 +726,7 @@
       return el('li', { class: 'avail-card' }, [
         el('div', null, [el('b', { class: 'avail-name', text: name }), el('span', { class: 'avail-sub', text: sub })]),
         el('div', { class: 'avail-price' }, [el('b', { text: money(total) }), el('span', { text: 'for ' + nights + ' night' + (nights > 1 ? 's' : '') + ' · about ' + money(total / nights) + ' a night' })]),
-        el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { if (bookHere) bookHere(prefill); else chat.book(prefill); } })
+        el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { if (bookHere) bookHere(prefill); else location.href = bookUrl(prefill); } })
       ]);
     }
     function run(q) {
@@ -971,26 +785,19 @@
     run({ from: f.from.value, to: f.to.value, adults: +f.adults.value, kids: +f.kids.value });
   })();
 
-  /* ---------- closing enquiry form: hand the enquiry to the farm ---------- */
+  /* ---------- Contact page message form: hand the message to the farm ---------- */
   (function () {
     var form = $('#eform');
     if (!form) return;
     var box = el('div', { class: 'enq-send', hidden: true, 'aria-live': 'polite' });
     form.appendChild(box);
     document.addEventListener('lindani:enquiry', function (e) {
-      var r = e.detail, n = r.from && r.to ? nightsBetween(r.from, r.to) : 0;
-      var text = [
-        'ENQUIRY from the Lindani Farm website',
-        'Name: ' + r.name, 'Contact: ' + r.contact,
-        'Dates: ' + fmtDate(r.from) + ' to ' + fmtDate(r.to) + (n ? ' (' + n + ' night' + (n > 1 ? 's' : '') + ')' : ''),
-        'Guests: ' + r.adults + ' adult' + (r.adults > 1 ? 's' : '') + (r.kids ? ', ' + r.kids + ' child' + (r.kids > 1 ? 'ren' : '') : ''),
-        r.message ? 'Message: ' + r.message : null,
-        '', 'Please let me know about availability. Thank you!'
-      ].filter(function (x) { return x !== null; }).join('\n');
+      var r = e.detail;
+      var text = ['MESSAGE from the Lindani Farm website', 'Name: ' + r.name, 'Contact: ' + r.contact, '', r.message].join('\n');
       var status = el('p', { class: 'fx-small', role: 'status' });
       box.innerHTML = '';
-      box.appendChild(el('p', { text: 'Thanks, ' + r.name.split(' ')[0] + '. Send your enquiry to the farm:' }));
-      box.appendChild(shareButtons('Enquiry: ' + fmtDate(r.from) + ' to ' + fmtDate(r.to), text, status));
+      box.appendChild(el('p', { text: 'Thanks, ' + r.name.split(' ')[0] + '. Send your message to the farm:' }));
+      box.appendChild(shareButtons('Message from ' + r.name, text, status));
       box.appendChild(status);
       box.hidden = false;
       $('a', box).focus();
@@ -1022,7 +829,7 @@
   }
   function bookUrl(o) {
     var p = []; Object.keys(o).forEach(function (k) { if (o[k] != null && o[k] !== '') p.push(k + '=' + encodeURIComponent(o[k])); });
-    return 'book.html' + (p.length ? '?' + p.join('&') : '') + '#quick';
+    return 'book.html' + (p.length ? '?' + p.join('&') : '') + '#request';
   }
   function photo(name, alt, w, h, lazy) {
     return el('img', { src: 'assets/' + name + '.webp', alt: alt || '', width: w || 1080, height: h || 720, loading: lazy === false ? null : 'lazy', decoding: 'async' });
@@ -1313,7 +1120,6 @@
     });
   })();
 
-  picker.attach($('#e-in'), $('#e-out'));
   renderRates();
   initLang();
 })();

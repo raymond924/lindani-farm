@@ -165,7 +165,7 @@ a,button{touch-action:manipulation}
 .farm{padding:120px 0 40px}
 .farm-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px}
 .stack{position:relative}
-.card{position:sticky;top:104px;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;transform-origin:50% 0;will-change:transform}
+.card{position:sticky;top:104px;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:48px;transform-origin:50% 0}
 .card-text{display:flex;flex-direction:column;justify-content:flex-end;min-height:440px;padding:40px;border-radius:12px;background:var(--sage)}
 .card-text .tag{margin-bottom:auto}
 .card-text h3{font-size:clamp(34px,3.4vw,48px);margin:0 0 16px}
@@ -541,10 +541,6 @@ span.ag-cell{background:var(--sage);color:var(--muted);text-decoration:line-thro
    Motion (motion.js), modelled on graftonsafaris.com. Only active on html.mo,
    which the inline <head> script sets unless the visitor prefers reduced motion.
    ========================================================================== */
-html.lenis,html.lenis body{height:auto}
-html.lenis{scroll-behavior:auto}
-.lenis.lenis-stopped{overflow:clip}
-.lenis [data-lenis-prevent]{overscroll-behavior:contain}
 :root{--ease-out:cubic-bezier(.215,.61,.355,1)}
 
 /* headings: words rise from behind a mask */
@@ -570,15 +566,10 @@ html.lenis{scroll-behavior:auto}
   .hero-inner .hero-sub{animation:hero-in .7s var(--ease-out) .22s both}
   .hero-inner > .circle,.hero-inner .btn{animation:hero-in .7s var(--ease-out) .32s both}
 }
-.mo .hero > img{will-change:translate}
 
-/* nav steps aside on the way down */
-.nav{transition:box-shadow .3s,translate .6s var(--ease-out)}
-.nav.nav-away{translate:0 calc(-100% - 40px)}
 
 /* footer slides over the closing panel */
 .footer{position:relative;z-index:2}
-.mo .closer{will-change:translate}
 
 /* button labels roll on hover */
 .roll{display:inline-grid;overflow:clip;vertical-align:top;padding:.12em 0;margin:-.12em 0}
@@ -588,7 +579,6 @@ html.lenis{scroll-behavior:auto}
 :is(.btn,.fx-btn):hover .roll-b{translate:0 0}
 
 @media (prefers-reduced-motion:reduce){
-  .nav.nav-away{translate:none}
   .roll-b{display:none}
   :is(.btn,.fx-btn):hover .roll-a{translate:none}
 }
@@ -625,3 +615,42 @@ html.lenis{scroll-behavior:auto}
   .reviews li{padding:24px 20px}
   .reviews blockquote{font-size:21px}
 }
+
+/* ---------- Scroll-linked effects, run by the browser on the GPU in step with the scroll
+   (CSS scroll-driven animations). Where a browser doesn't support them, these
+   effects are simply left out: scrolling stays native and smooth everywhere. ---------- */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* hero photo drifts at about a fifth of the scroll speed */
+    .hero > img{animation:settle 2.4s cubic-bezier(.2,.7,.2,1) forwards,hero-drift linear both;animation-timeline:auto,scroll(root);animation-range:normal,0 100vh}
+    @keyframes hero-drift{to{translate:0 20vh}}
+
+    /* stacked cards: each one tilts back as the next slides over it */
+    .stack{timeline-scope:--c2,--c3,--c4,--c5,--c6}
+    .stack > .card:nth-child(2){view-timeline-name:--c2}
+    .stack > .card:nth-child(3){view-timeline-name:--c3}
+    .stack > .card:nth-child(4){view-timeline-name:--c4}
+    .stack > .card:nth-child(5){view-timeline-name:--c5}
+    .stack > .card:nth-child(6){view-timeline-name:--c6}
+    .stack > .card:not(:last-child){animation:card-back-l linear both;animation-range:entry 10% entry 90%}
+    .stack > .card:nth-child(even):not(:last-child){animation-name:card-back-r}
+    .stack > .card:nth-child(1){animation-timeline:--c2}
+    .stack > .card:nth-child(2){animation-timeline:--c3}
+    .stack > .card:nth-child(3){animation-timeline:--c4}
+    .stack > .card:nth-child(4){animation-timeline:--c5}
+    .stack > .card:nth-child(5){animation-timeline:--c6}
+    @keyframes card-back-l{to{transform:scale(.95) rotate(-2.2deg)}}
+    @keyframes card-back-r{to{transform:scale(.95) rotate(2.2deg)}}
+
+    /* footer slides up over the closing panel */
+    body{timeline-scope:--foot}
+    .footer{view-timeline-name:--foot}
+    main > .enquire:last-child{animation:closer-sink linear both;animation-timeline:--foot;animation-range:entry 0% entry 100%}
+    @keyframes closer-sink{to{translate:0 90px}}
+  }
+}
+
+/* Closing panel: one call to action (bookings happen on the Book page) */
+.cta-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.cta-row .btn{min-height:52px;justify-content:center}
+@media (max-width:640px){.cta-row .btn{width:100%}}

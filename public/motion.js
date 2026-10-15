@@ -1,9 +1,9 @@
 /* Lindani Farm: motion, modelled on graftonsafaris.com.
-   - Smooth scrolling (Lenis, assets/vendor/lenis.min.js)
+   - Native scrolling (smoothest on every device); scroll-linked effects are CSS
+     scroll-driven animations in site.css, so they never lag behind the page
    - Headings rise word by word from behind a mask
    - Text and cards fade up as they arrive; photos open out and settle from a zoom
-   - The hero photo drifts slower than the page; the nav steps aside when scrolling down
-   - Button labels roll on hover; the footer slides up over the closing panel
+   - Button labels roll on hover
    Everything is skipped when the visitor prefers reduced motion. The inline script in
    <head> adds html.mo before first paint and removes it if this file never runs. */
 (function () {
@@ -14,18 +14,6 @@
   var EASE_IN_VIEW = 0.12;
 
   function $$(sel, ctx) { return [].slice.call((ctx || document).querySelectorAll(sel)); }
-
-  /* ---------- smooth scrolling ---------- */
-  var lenis = null;
-  if (window.Lenis) {
-    lenis = new window.Lenis({
-      autoRaf: true, lerp: 0.1, smoothWheel: true,
-      anchors: { offset: -96 },
-      // let panels with their own scroll (concierge, calendar, menus, dialogs, grids) scroll natively
-      prevent: function (node) { return !!(node.closest && node.closest('.fx-panel, [class*="dp-"], dialog, .ag-scroll, .ad-occ, .nav-links, [data-lenis-prevent]')); }
-    });
-    window.LINDANI_LENIS = lenis;
-  }
 
   /* ---------- headings: words rise from behind a mask ---------- */
   function splitWords(h) {
@@ -104,42 +92,10 @@
     requestAnimationFrame(function () { requestAnimationFrame(function () { show(t); }); });
   });
 
-  /* ---------- hero: text arrives, photo drifts ---------- */
-  var hero = document.querySelector('.hero'), heroImg = hero && hero.querySelector(':scope > img');
   root.classList.add('mo-on');
 
-  /* ---------- nav steps aside on the way down, returns on the way up ---------- */
-  var nav = document.getElementById('nav'), links = document.getElementById('nav-links'), lastY = scrollY;
-
-  /* ---------- footer slides over the closing panel ---------- */
-  var footer = document.querySelector('.footer');
-  var closer = footer && document.querySelector('main > section:last-of-type.enquire, main > .enquire:last-child');
-  if (closer) closer.classList.add('closer');
-
-  var ticking = false;
-  function frame() {
-    ticking = false;
-    var y = scrollY, vh = innerHeight;
-    if (heroImg) {
-      var hb = hero.getBoundingClientRect().bottom;
-      if (hb > 0) heroImg.style.translate = '0 ' + Math.round(Math.min(y, vh) * 0.22) + 'px';
-    }
-    if (nav) {
-      var open = links && links.classList.contains('open');
-      var busy = open || nav.contains(document.activeElement);
-      if (busy || y < 300 || y < lastY - 6) nav.classList.remove('nav-away');
-      else if (y > lastY + 6) nav.classList.add('nav-away');
-      if (Math.abs(y - lastY) > 6) lastY = y;
-    }
-    if (closer) {
-      var into = vh - footer.getBoundingClientRect().top;
-      closer.style.translate = into > 0 ? '0 ' + Math.round(Math.min(into, footer.offsetHeight) * 0.2) + 'px' : '';
-    }
-  }
-  function req() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
-  addEventListener('scroll', req, { passive: true });
-  addEventListener('resize', req);
-  frame();
+  /* The nav always stays in view, so "Book your stay" is one click away on every screen.
+     (The photo drift, card tilt and footer slide are CSS scroll-driven animations in site.css.) */
 
   /* ---------- button labels roll on hover ---------- */
   function roll(btn) {
