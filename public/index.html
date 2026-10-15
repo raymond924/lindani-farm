@@ -33,7 +33,7 @@
     <button class="menu-btn" id="menu-btn" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16"/></svg>
     </button>
-    <a href="book.html#request" class="btn btn-book" data-i18n="book">Book your stay</a>
+    <a href="book.html#request" class="btn btn-book" data-i18n="book" data-book>Book your stay</a>
   </div>
 </header>
 
@@ -45,7 +45,7 @@
       <div>
         <p class="label" data-i18n="hero_label">(&nbsp;Paarl · Cape Winelands&nbsp;)</p>
         <h1 id="hero-title" class="h-xl" data-i18n-html="hero_title">Leave the city <em>at the gate.</em></h1>
-        <p class="hero-sub" data-i18n="hero_sub">Four private self-catering studios on a farm just outside Paarl.</p>
+        <p class="hero-sub" data-i18n="hero_sub">Four private self-catering units just outside Paarl, interlinking in pairs so families can stay together.</p>
       </div>
       <a href="#quick" class="circle" aria-label="Scroll to plan your stay">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M12 4v16M5 13l7 7 7-7"/></svg>
@@ -94,7 +94,7 @@
     <div class="wrap">
       <div class="studios-head">
         <h2 id="studios-title" class="h-l" data-i18n-html="studios_title">Come home to <br><em>your own studio</em></h2>
-        <p>All the comforts of home, only better. Four private units, each self-catering, each with its own way out to the garden.</p>
+        <p>All the comforts of home, only better. Four private self-catering units that interlink in pairs: open the connecting door and a family of four has its own space together, with two bathrooms and two kitchens.</p>
       </div>
       <div class="studio-grid">
         <figure class="big"><img src="assets/studio-bed.webp" width="1080" height="1080" alt="Studio bedroom with white linen, patterned cushions and a kitchenette behind" loading="lazy"></figure>
@@ -102,7 +102,7 @@
         <figure class="small"><img src="assets/studio-kitchen.webp" width="1080" height="1080" alt="Studio with fully equipped kitchenette, desk and en-suite bathroom" loading="lazy"></figure>
       </div>
       <ul class="features">
-        <li><b>Crisp white linen</b><span>Made-up beds and fresh towels when you arrive.</span></li>
+        <li><b>Made for families</b><span>Units interlink in pairs, so the whole family stays together.</span></li>
         <li><b>Full kitchen</b><span>Cook what you like, when you like. Fully equipped.</span></li>
         <li><b>En-suite bathroom</b><span>Your own bathroom in every studio.</span></li>
         <li><b>Private patio</b><span>Morning coffee and evening wine, outside your own door.</span></li>
@@ -216,11 +216,12 @@
       <h2 id="enq-title" class="h-l" data-i18n-html="enq_title">Your farm escape <em>starts here</em></h2>
       <p class="lede">Choose your dates, see the price and send your request straight to the farm. Or call or WhatsApp reservations on <a href="tel:+27832916790" style="text-decoration:underline;text-underline-offset:3px">083 291 6790</a>.</p>
       <div class="cta-row">
-        <a class="btn btn-book" href="book.html#request"><span>Check dates &amp; book</span>
+        <a class="btn btn-book" href="book.html#request" data-book><span>Check dates &amp; book</span>
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
         </a>
         <a class="btn btn-ghost" href="https://wa.me/27832916790" target="_blank" rel="noopener">WhatsApp us</a>
       </div>
+      <p class="cta-policy"><a href="#" data-link="policyUrl" target="_blank" rel="noopener">Read our booking policy</a></p>
     </div>
   </section>
 
@@ -244,7 +245,8 @@
       <li><a href="studios.html">Studios</a></li>
       <li><a href="explore.html">Explore</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="book.html#request">Book your stay</a></li>
+      <li><a href="book.html#request" data-book>Book your stay</a></li>
+      <li><a href="#" data-link="policyUrl" target="_blank" rel="noopener">Booking policy</a></li>
     </ul>
   </div>
   <div class="f-bot">

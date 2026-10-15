@@ -51,6 +51,10 @@ window.LODGE = {
     // gets once a stay is booked. Shown on the Book page, in the FAQ answers,
     // the concierge and the "request sent" step.
     policyUrl: "https://heyzine.com/flip-book/764e76e23f.html#page/14",
+    // Lindani's NightsBridge booking page. Once set, every "Book your stay" button goes
+    // straight to NightsBridge (live availability, no double bookings). Leave "" to keep
+    // booking requests by WhatsApp/email.
+    nightsbridgeUrl: "",                  // PLACEHOLDER: paste the NightsBridge booking link
     onboardingUrl: "https://lindani-vineyard-stay.base44.app/welcome",
     // Booking requests are saved to the bookings dashboard (/admin) on the live site.
     // Set to false to go back to WhatsApp/email hand-off only.
@@ -157,6 +161,7 @@ window.LODGE = {
     { q: "How does check-in work?", a: "It's self check-in. Once your stay is paid in full, we send your access code, parking details and directions on WhatsApp the day before you arrive. Park in the marked bays at the stone feature wall and walk down the stairs to the units.", link: "onboardingUrl" },
     { q: "Is there a minimum stay?", a: "Two nights for stays that include a Friday or Saturday night. Shorter stays may be possible on other dates: just ask." },
     { q: "Are meals included?", a: "Lindani is self-catering. Every unit has a fully equipped kitchen, and there's a braai area with firewood provided." },
+    { q: "Can a family stay together?", a: "Yes. The units interlink in pairs (One with Two, Three with Four). Book both units of a pair and open the connecting door: a family of four gets two bedrooms, two bathrooms and two kitchens under one roof." },
     { q: "Can we bring children?", a: "Yes. Each unit sleeps two, and the units interlink in pairs to make a family unit for four. There's no lifeguard at the pool: children under 12 may not swim unaccompanied." },
     { q: "Can we bring our dog?", a: "Sorry, pets aren't allowed. The farm has its own dogs, horses, geese and chickens." },
     { q: "Can we swim in the dam?", a: "No, please don't swim in the dam, but you're welcome to walk down to the water. The pool is open from sunrise to sunset." },
@@ -204,7 +209,7 @@ window.LODGE = {
         answer: "Hello! Lovely to hear from you. What can I help you with: rooms, dates, things to do, or getting here?" },
       { id: "rooms", keywords: ["room", "rooms", "studio", "studios", "rate", "rates", "price", "prices", "cost", "how much", "accommodation", "unit", "sleep", "bed"],
         action: "rooms",
-        answer: "We have four private self-catering units, each with a queen bed, a full kitchen, an en-suite bathroom, air-conditioning and Wi-Fi. Rates are R1,300 a night, or R1,700 in season:" },
+        answer: "We have four private self-catering units, each with a queen bed, a full kitchen, an en-suite bathroom, air-conditioning and Wi-Fi. They interlink in pairs, so a family of up to four can open the connecting door and stay together. Rates are R1,300 a night per unit, or R1,700 in season:" },
       { id: "dates", keywords: ["available", "availability", "dates", "date", "free", "vacancy", "check dates", "weekend", "night", "nights"],
         action: "dates",
         answer: "The Book page shows which units are free for your dates, the price and the deposit." },
@@ -253,7 +258,7 @@ window.LODGE = {
     en: {
       nav_explore: "Explore", nav_book: "Book", page_studios: "Four studios, <em>one quiet farm</em>", page_farm: "Life on <em>the farm</em>", page_explore: "Taste, explore and <em>wander nearby</em>", page_book: "Book <em>your stay</em>", page_contact: "Find us, <em>talk to us</em>", avail_title: "Availability <em>at a glance</em>",
       language: "Language", nav_farm: "The farm", nav_studios: "Studios", nav_nearby: "Nearby", nav_onfarm: "On the farm", nav_contact: "Contact",
-      book: "Book your stay", hero_sub: "Four private self-catering studios on a farm just outside Paarl.", hero_label: "( Paarl · Cape Winelands )", hero_title: "Leave the city <em>at the gate.</em>",
+      book: "Book your stay", hero_sub: "Four private self-catering units just outside Paarl, interlinking in pairs so families can stay together.", hero_label: "( Paarl · Cape Winelands )", hero_title: "Leave the city <em>at the gate.</em>",
       quick_title: "Plan your <em>stay here</em>", check_dates: "Check dates", exp_title: "A farm stay <br><em>made for slowing down</em>",
       meet_studios: "Meet the studios", studios_title: "Come home to <br><em>your own studio</em>", rates_title: "Studios &amp; <em>rates</em>",
       nearby_title: "Taste, explore <br>and <em>wander nearby</em>",

@@ -654,3 +654,11 @@ span.ag-cell{background:var(--sage);color:var(--muted);text-decoration:line-thro
 .cta-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
 .cta-row .btn{min-height:52px;justify-content:center}
 @media (max-width:640px){.cta-row .btn{width:100%}}
+
+/* Booking policy link under closing CTAs; NightsBridge panel on the Book page */
+.cta-policy{text-align:center;margin-top:18px;font-size:14px}
+.cta-policy a{text-decoration:underline;text-underline-offset:3px;color:inherit;opacity:.9}
+.nb-panel{padding:28px;border-radius:12px;background:var(--panel);margin-bottom:40px}
+.nb-panel .h-l{font-size:clamp(32px,3.4vw,46px);margin:12px 0 14px}
+.nb-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin-top:20px}
+.nb-policy{text-decoration:underline;text-underline-offset:3px}

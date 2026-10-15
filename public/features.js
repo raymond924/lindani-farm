@@ -726,7 +726,7 @@
       return el('li', { class: 'avail-card' }, [
         el('div', null, [el('b', { class: 'avail-name', text: name }), el('span', { class: 'avail-sub', text: sub })]),
         el('div', { class: 'avail-price' }, [el('b', { text: money(total) }), el('span', { text: 'for ' + nights + ' night' + (nights > 1 ? 's' : '') + ' · about ' + money(total / nights) + ' a night' })]),
-        el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { if (bookHere) bookHere(prefill); else location.href = bookUrl(prefill); } })
+        el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { if (D.booking.nightsbridgeUrl) window.open(D.booking.nightsbridgeUrl, '_blank', 'noopener'); else if (bookHere) bookHere(prefill); else location.href = bookUrl(prefill); } })
       ]);
     }
     function run(q) {
@@ -908,6 +908,13 @@
   fillList('policy-list', [D.policies.payment, D.policies.cancellation, D.policies.kids, D.policies.pets, D.policies.smoking,
     'Check-in from ' + D.booking.checkIn + ' (latest arrival ' + (D.booking.latestArrival || '20:00') + '), check-out by ' + D.booking.checkOut + '. ' + minRule,
     'Changes are welcome up to 30 days before check-in, subject to availability.']);
+
+  /* ---------- NightsBridge: once its link is set, every "Book" button books there ---------- */
+  var NB = D.booking.nightsbridgeUrl;
+  if (NB) {
+    $$('a[data-book], a[data-nb-link]').forEach(function (a) { a.href = NB; a.target = '_blank'; a.rel = 'noopener'; });
+    $$('[data-nb]').forEach(function (e) { e.hidden = false; });
+  }
 
   /* ---------- Links kept in lodge-data.js (booking policy, guest guide) ---------- */
   $$('a[data-link]').forEach(function (a) {
