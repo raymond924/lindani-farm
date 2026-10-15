@@ -30,6 +30,8 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+    # the GoHighLevel copy of the site loads its photos and fonts from here
+    Access-Control-Allow-Origin = "*"
 
 [[redirects]]
   from = "/*"

@@ -17,8 +17,11 @@
   /* ---------- current page in the nav and footer ---------- */
   var here=(location.pathname.split('/').pop()||'index.html').replace(/\.html$/,'')||'index';
   [].forEach.call(document.querySelectorAll('#nav-links a, .f-links a'),function(a){
-    var h=(a.getAttribute('href')||'').split('#')[0].replace(/\.html$/,'')||'';
-    if(h&&(h===here||(h==='index'&&here==='index')))a.setAttribute('aria-current','page');
+    // works for "studios.html" here and "/studios" on the GoHighLevel copy ("/" is the homepage)
+    var raw=(a.getAttribute('href')||'').split('#')[0];
+    if(!raw||/^[a-z]+:/i.test(raw))return;
+    var h=raw.split('/').pop().replace(/\.html$/,'')||'index';
+    if(h===here)a.setAttribute('aria-current','page');
   });
 
   /* ---------- message form (Contact page) ---------- */

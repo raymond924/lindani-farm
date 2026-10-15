@@ -8,6 +8,12 @@
   'use strict';
   var D = window.LODGE;
   if (!D) return;
+  // When the pages run somewhere else (the GoHighLevel copy), window.LINDANI_SITE says where the
+  // photos live and what each page's address is. Without it, everything is relative to this folder.
+  var SITE = window.LINDANI_SITE || {};
+  var ASSETS = SITE.assets || 'assets/';
+  function page(name) { return (SITE.pages && SITE.pages[name]) || name + '.html'; }
+  if (SITE.pages && SITE.pages.policy) D.booking.policyUrl = SITE.pages.policy;
   if (window.LODGE_LIVE && Array.isArray(window.LODGE_LIVE.booked)) D.booked = D.booked.concat(window.LODGE_LIVE.booked);
 
   /* ---------- small helpers ---------- */
@@ -283,8 +289,8 @@
 
     /* --- booking: one place to book, NightsBridge (the Book page when it isn't set) --- */
     function goBook(text) {
-      var acts = NB_LIVE ? [{ label: 'Book on NightsBridge', href: nbUrl() }, { label: 'Booking policy', href: D.booking.policyUrl || 'policy.html' }]
-        : [{ label: 'Check dates & book', href: 'book.html#request' }];
+      var acts = NB_LIVE ? [{ label: 'Book on NightsBridge', href: nbUrl() }, { label: 'Booking policy', href: D.booking.policyUrl || page('policy') }]
+        : [{ label: 'Check dates & book', href: page('book') + '#request' }];
       push({ from: 'bot', kind: 'actions', text: text, actions: acts });
     }
 
@@ -454,10 +460,10 @@
   }
   function bookUrl(o) {
     var p = []; Object.keys(o).forEach(function (k) { if (o[k] != null && o[k] !== '') p.push(k + '=' + encodeURIComponent(o[k])); });
-    return 'book.html' + (p.length ? '?' + p.join('&') : '') + '#request';
+    return page('book') + (p.length ? '?' + p.join('&') : '') + '#request';
   }
   function photo(name, alt, w, h, lazy) {
-    return el('img', { src: 'assets/' + name + '.webp', alt: alt || '', width: w || 1080, height: h || 720, loading: lazy === false ? null : 'lazy', decoding: 'async' });
+    return el('img', { src: ASSETS + name + '.webp', alt: alt || '', width: w || 1080, height: h || 720, loading: lazy === false ? null : 'lazy', decoding: 'async' });
   }
   function fillList(id, items) {
     var ul = $('#' + id); if (!ul) return;
@@ -496,7 +502,7 @@
       box.className = 'nb-panel';
       box.appendChild(el('p', { text: 'Open the calendar to see which nights are free for every unit, then book instantly. Book two interlinking units to stay together as a family.' }));
       box.appendChild(el('p', { class: 'nb-actions' }, [el('a', { class: 'btn btn-book', href: D.booking.nightsbridgeUrl, target: '_blank', rel: 'noopener', text: 'See live availability' }),
-        document.createTextNode(' '), el('a', { class: 'nb-policy', href: D.booking.policyUrl || 'policy.html', text: 'Booking policy' })]));
+        document.createTextNode(' '), el('a', { class: 'nb-policy', href: D.booking.policyUrl || page('policy'), text: 'Booking policy' })]));
       return;
     }
     var start = today(), DAYS = 28;
@@ -600,7 +606,7 @@
   (function () {
     var ul = $('#gallery'); if (!ul) return;
     var items = D.gallery || [], idx = 0, dlg, img, cap, count, opener;
-    function show(i) { idx = (i + items.length) % items.length; img.src = 'assets/' + items[idx].src + '.webp'; img.alt = items[idx].alt; cap.textContent = items[idx].alt; count.textContent = (idx + 1) + ' / ' + items.length; }
+    function show(i) { idx = (i + items.length) % items.length; img.src = ASSETS + items[idx].src + '.webp'; img.alt = items[idx].alt; cap.textContent = items[idx].alt; count.textContent = (idx + 1) + ' / ' + items.length; }
     function btn(cls, label, d, fn) { var b = el('button', { type: 'button', class: 'viewer-btn ' + cls, 'aria-label': label, onclick: fn }); b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="' + d + '"/></svg>'; return b; }
     function build() {
       img = el('img', { alt: '' }); cap = el('figcaption'); count = el('p', { class: 'viewer-count', 'aria-live': 'polite' });
