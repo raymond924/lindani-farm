@@ -56,18 +56,17 @@
   function weekday(s) { return new Date(toMs(s)).getUTCDay(); }
 
   /* ---------- rates and availability ---------- */
-  function seasonMultiplier(dateStr) {
-    var md = dateStr.slice(5);
+  // the rate for one night: a season's exact rate if the night falls inside it, else the unit's rate
+  function nightRate(room, dateStr) {
     for (var i = 0; i < D.seasons.length; i++) {
       var s = D.seasons[i];
-      var inside = s.from <= s.to ? (md >= s.from && md <= s.to) : (md >= s.from || md <= s.to);
-      if (inside) return s.multiplier;
+      if (dateStr >= s.from && (!s.to || dateStr <= s.to)) return s.rate || room.rate * (s.multiplier || 1);
     }
-    return 1;
+    return room.rate;
   }
   function stayPrice(room, from, to) {
     var total = 0, n = nightsBetween(from, to);
-    for (var i = 0; i < n; i++) total += room.rate * seasonMultiplier(addDays(from, i));
+    for (var i = 0; i < n; i++) total += nightRate(room, addDays(from, i));
     return Math.round(total);
   }
   function isFree(roomId, from, to) {
@@ -392,11 +391,11 @@
         el('div', { class: 'rate-price' }, [el('b', { text: money(r.rate) }), el('span', { text: 'per night' })])
       ]));
     });
-    var same = D.rooms.every(function (r) { return r.rate === D.rooms[0].rate; });
-    var seasons = D.seasons.map(function (s) {
-      var md = function (x) { return new Date(Date.UTC(2001, +x.slice(0, 2) - 1, +x.slice(3))).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', timeZone: 'UTC' }); };
-      var pct = Math.round((s.multiplier - 1) * 100);
-      return s.name + ' (' + md(s.from) + ' – ' + md(s.to) + '): ' + (same ? money(Math.round(D.rooms[0].rate * s.multiplier)) + ' a night' : (pct > 0 ? '+' : '') + pct + '%');
+    // upcoming seasons only, e.g. "Festive season (1 Dec 2026 – 17 Jan 2027): R1,800"
+    var today = new Date().toISOString().slice(0, 10);
+    var dmy = function (x) { return new Date(toMs(x)).toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }); };
+    var seasons = D.seasons.filter(function (s) { return !s.to || s.to >= today; }).map(function (s) {
+      return s.name + ' (' + (s.to ? dmy(s.from) + ' – ' + dmy(s.to) : 'from ' + dmy(s.from)) + '): ' + money(nightRate(D.rooms[0], s.from));
     }).join(' · ');
     box.appendChild(el('p', { class: 'rate-foot', text: (seasons ? 'Seasonal rates: ' + seasons + '. ' : '') + minRule }));
   }
@@ -906,7 +905,7 @@
   fillList('amenity-list', D.amenities);
   fillList('rules-list', D.houseRules || []);
   fillList('policy-list', [D.policies.payment, D.policies.cancellation, D.policies.kids, D.policies.pets, D.policies.smoking,
-    'Check-in from ' + D.booking.checkIn + ' (latest arrival ' + (D.booking.latestArrival || '20:00') + '), check-out by ' + D.booking.checkOut + '. ' + minRule,
+    'Check-in from ' + D.booking.checkIn + ' to ' + (D.booking.latestArrival || '17:00') + ' (later by arrangement), check-out by ' + D.booking.checkOut + '. ' + minRule,
     'Changes are welcome up to 30 days before check-in, subject to availability.']);
 
   /* ---------- NightsBridge: once its link is set, every "Book" button books there ---------- */

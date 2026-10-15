@@ -34,8 +34,8 @@ window.LODGE = {
     minNights: 2,
     minNightsWeekendOnly: true,
     maxNights: 30,
-    checkIn: "14:00",                      // booking policy: from 14:00, latest arrival 20:00
-    latestArrival: "20:00",
+    checkIn: "14:00",                      // NightsBridge: check-in 14:00–17:00, later by arrangement
+    latestArrival: "17:00",            // (the guest guide's policy page says 20:00: confirm with the farm)
     checkOut: "10:00",
     depositPercent: 50,                    // within 24 hours of booking; balance 7 days before check-in
     depositDueHours: 24,
@@ -63,29 +63,32 @@ window.LODGE = {
     depositInstructions: "We'll send your invoice with our banking details. Please pay by EFT with the invoice number as the reference, and send the proof of payment on WhatsApp or by email."
   },
 
-  // Nightly rates are multiplied by the season that night falls in.
-  // "from"/"to" are MM-DD and may wrap over New Year.
-  // Lindani's rates: R1,300 a night out of season, R1,700 in season (guest guide; their site says "From R1,300/night").
+  // Nightly rates per unit, copied from Lindani's NightsBridge calendar (book.nightsbridge.com/40392,
+  // checked 15 Oct 2026). Outside these dates each unit's "rate" applies (R1,400).
+  // "from"/"to" are YYYY-MM-DD and inclusive; leave "to" empty for "from this date on".
+  // When the farm changes a rate in NightsBridge, change it here too.
   seasons: [
-    { name: "In season", from: "12-01", to: "01-31", multiplier: 1700 / 1300 }  // PLACEHOLDER: confirm which dates count as "in season"
+    { name: "Festive season", from: "2026-12-01", to: "2027-01-17", rate: 1800 },
+    { name: "Easter",         from: "2027-03-25", to: "2027-04-05", rate: 1800 },
+    { name: "2027 rate",      from: "2027-04-06", to: "", rate: 1500 }
   ],
 
-  // The four self-catering units (Room 1–4 in the guest guide): queen bed, full kitchen,
+  // The four self-catering units (Room 1–4 in the guest guide): queen bed, kitchenette,
   // en-suite, air-conditioning, Wi-Fi and TV. Rooms interlink in pairs (1+2, 3+4).
   // Blurbs are PLACEHOLDERS until the farm describes each room.
   rooms: [
-    { id: "studio-1", photo: "studio-bed", name: "Studio One",   maxAdults: 2, sleeps: 2, rate: 1300, bed: "Queen bed",
+    { id: "studio-1", photo: "studio-bed", name: "Studio One",   maxAdults: 2, sleeps: 2, rate: 1400, bed: "Queen bed",
       blurb: "Opens into Studio Two to make a family unit for four.", placeholder: true },
-    { id: "studio-2", photo: "studio-kitchen", name: "Studio Two",   maxAdults: 2, sleeps: 2, rate: 1300, bed: "Queen bed",
+    { id: "studio-2", photo: "studio-kitchen", name: "Studio Two",   maxAdults: 2, sleeps: 2, rate: 1400, bed: "Queen bed",
       blurb: "Opens into Studio One to make a family unit for four.", placeholder: true },
-    { id: "studio-3", photo: "studio-patio", name: "Studio Three", maxAdults: 2, sleeps: 2, rate: 1300, bed: "Queen bed",
+    { id: "studio-3", photo: "studio-patio", name: "Studio Three", maxAdults: 2, sleeps: 2, rate: 1400, bed: "Queen bed",
       blurb: "Opens into Studio Four to make a family unit for four.", placeholder: true },
-    { id: "studio-4", photo: "cottages", name: "Studio Four",  maxAdults: 2, sleeps: 2, rate: 1300, bed: "Queen bed",
+    { id: "studio-4", photo: "cottages", name: "Studio Four",  maxAdults: 2, sleeps: 2, rate: 1400, bed: "Queen bed",
       blurb: "Opens into Studio Three to make a family unit for four.", placeholder: true }
   ],
   // From the guest guide's amenities page.
-  amenities: ["Queen bed with quality linen", "Fully equipped kitchen with gas stove and air fryer", "En-suite bathroom with towels and toiletries",
-              "Air-conditioning", "Free Wi-Fi, TV with Netflix and Prime Video", "Pool, braai area and secure parking"],
+  amenities: ["Queen bed with quality linen and an electric blanket", "Kitchenette with stove, microwave, fridge, toaster and air fryer", "En-suite shower, towels and hairdryer",
+              "Air-conditioning, a safe and cleaning service", "Free Wi-Fi, TV with Netflix and Prime Video", "Pool, braai area and secure parking"],
 
   // Mock availability calendar. Each entry blocks a studio from "from" (check-in)
   // up to but not including "to" (check-out). PLACEHOLDER: replace with real bookings,
@@ -157,12 +160,12 @@ window.LODGE = {
     { q: "How do I pay?", a: "By EFT. Pay a 50% deposit within 24 hours of booking and the balance 7 days before check-in, or pay in full upfront. If your stay is less than 7 days away, full payment confirms it. Use your invoice number as the reference and send the proof of payment on WhatsApp or by email.", link: "policyUrl" },
     { q: "What if I need to cancel?", a: "Cancellations must be in writing to michelle.woest@gmail.com. 30 days or more before arrival, nothing is forfeited; 21 days before, 25%; 14 days before, 50%; 7 days before, 100%. No-shows and early departures aren't refunded. Refunds are paid within 7–10 business days.", link: "policyUrl" },
     { q: "Can I change my dates?", a: "Yes, up to 30 days before check-in, subject to availability. If the new dates have different rates, the difference is charged or refunded." },
-    { q: "What time is check-in and check-out?", a: "Check-in is from 14:00 and the latest arrival is 20:00 (later only by arrangement, and a fee may apply). Check-out is by 10:00. Early check-in and late check-out depend on bookings: ask us on the day." },
+    { q: "What time is check-in and check-out?", a: "Check-in is from 14:00 to 17:00. Arriving later? Let us know in advance so we can arrange it (a fee may apply). Check-out is by 10:00. Early check-in and late check-out depend on bookings: ask us on the day." },
     { q: "How does check-in work?", a: "It's self check-in. Once your stay is paid in full, we send your access code, parking details and directions on WhatsApp the day before you arrive. Park in the marked bays at the stone feature wall and walk down the stairs to the units.", link: "onboardingUrl" },
     { q: "Is there a minimum stay?", a: "Two nights for stays that include a Friday or Saturday night. Shorter stays may be possible on other dates: just ask." },
-    { q: "Are meals included?", a: "Lindani is self-catering. Every unit has a fully equipped kitchen, and there's a braai area with firewood provided." },
-    { q: "Can a family stay together?", a: "Yes. The units interlink in pairs (One with Two, Three with Four). Book both units of a pair and open the connecting door: a family of four gets two bedrooms, two bathrooms and two kitchens under one roof." },
-    { q: "Can we bring children?", a: "Yes. Each unit sleeps two, and the units interlink in pairs to make a family unit for four. There's no lifeguard at the pool: children under 12 may not swim unaccompanied." },
+    { q: "Are meals included?", a: "Lindani is self-catering. Every unit has a kitchenette with a stove, microwave, fridge, toaster, air fryer, and tea and coffee, and there's a braai area with firewood provided." },
+    { q: "Can a family stay together?", a: "Yes. The units interlink in pairs (One with Two, Three with Four). Book both units of a pair and open the connecting door: a family of four gets two bedrooms, two bathrooms and two kitchenettes under one roof." },
+    { q: "Can we bring children?", a: "Yes. Each unit sleeps two (children pay the same rate as adults), and the units interlink in pairs to make a family unit for four. There's no lifeguard at the pool: children under 12 may not swim unaccompanied." },
     { q: "Can we bring our dog?", a: "Sorry, pets aren't allowed. The farm has its own dogs, horses, geese and chickens." },
     { q: "Can we swim in the dam?", a: "No, please don't swim in the dam, but you're welcome to walk down to the water. The pool is open from sunrise to sunset." },
     { q: "Is there Wi-Fi and air-conditioning?", a: "Yes: free Wi-Fi, air-conditioning and a TV with Netflix and Prime Video in every unit, plus secure parking inside the farm gates." },
@@ -183,7 +186,7 @@ window.LODGE = {
     { src: "studio-patio", alt: "Patio doors open to the trees at sunset" }
   ],
 
-  meals: "Lindani is self-catering: every unit has a fully equipped kitchen (gas stove, air fryer, microwave, tea and coffee), and there's a braai area with firewood provided. " +
+  meals: "Lindani is self-catering: every unit has a kitchenette (stove, microwave, fridge, toaster, air fryer, tea and coffee), and there's a braai area with firewood provided. " +
          "Paarl's shops and restaurants on Main Street are about 15 minutes away.",
 
   directions: "Lindani sits right on the N1 at the foot of Du Toitskloof Pass in Klein-Drakenstein, on the edge of Paarl: about an hour from Cape Town. " +
@@ -209,7 +212,7 @@ window.LODGE = {
         answer: "Hello! Lovely to hear from you. What can I help you with: rooms, dates, things to do, or getting here?" },
       { id: "rooms", keywords: ["room", "rooms", "studio", "studios", "rate", "rates", "price", "prices", "cost", "how much", "accommodation", "unit", "sleep", "bed"],
         action: "rooms",
-        answer: "We have four private self-catering units, each with a queen bed, a full kitchen, an en-suite bathroom, air-conditioning and Wi-Fi. They interlink in pairs, so a family of up to four can open the connecting door and stay together. Rates are R1,300 a night per unit, or R1,700 in season:" },
+        answer: "We have four private self-catering units, each with a queen bed, a kitchenette, an en-suite shower, air-conditioning and Wi-Fi. They interlink in pairs, so a family of up to four can open the connecting door and stay together. Rates are R1,400 a night per unit (R1,800 over the festive season and Easter):" },
       { id: "dates", keywords: ["available", "availability", "dates", "date", "free", "vacancy", "check dates", "weekend", "night", "nights"],
         action: "dates",
         answer: "The Book page shows which units are free for your dates, the price and the deposit." },
@@ -230,7 +233,7 @@ window.LODGE = {
       { id: "meals", keywords: ["food", "meal", "meals", "breakfast", "dinner", "restaurant", "kitchen", "cook", "self catering", "braai"],
         answer: "{meals}" },
       { id: "times", keywords: ["check in", "check out", "checkin", "checkout", "what time", "arrive", "arrival", "late", "early"],
-        answer: "Check-in is from {checkIn} (latest arrival 20:00, later only by arrangement) and check-out is by {checkOut}. It's self check-in: we send your access code on WhatsApp the day before you arrive. Stays that include a Friday or Saturday night are at least {minNights} nights." },
+        answer: "Check-in is from {checkIn} to 17:00 (later only by arrangement) and check-out is by {checkOut}. It's self check-in: we send your access code on WhatsApp the day before you arrive. Stays that include a Friday or Saturday night are at least {minNights} nights." },
       { id: "policies", keywords: ["cancel", "cancellation", "refund", "deposit", "pay", "payment", "smoking", "smoke", "policy", "rules"],
         answer: "{cancellation}\n\n{payment}\n\n{smoking}\n\nRead the [full booking policy]({policyUrl})." },
       { id: "wifi", keywords: ["wifi", "wi-fi", "internet", "signal", "loadshedding", "load shedding", "power", "aircon", "air conditioning", "parking"],
