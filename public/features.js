@@ -69,7 +69,14 @@
     for (var i = 0; i < n; i++) total += nightRate(room, addDays(from, i));
     return Math.round(total);
   }
+  // With NightsBridge connected, its calendar is the only source of availability:
+  // the sample bookings in lodge-data.js are ignored and nothing here claims dates are full.
+  var NB_LIVE = !!D.booking.nightsbridgeUrl;
+  function nbUrl(from, to) {
+    return D.booking.nightsbridgeUrl + (from && to ? (D.booking.nightsbridgeUrl.indexOf('?') < 0 ? '?' : '&') + 'startdate=' + from + '&enddate=' + to : '');
+  }
   function isFree(roomId, from, to) {
+    if (NB_LIVE) return true;
     return !D.booked.some(function (b) { return b.room === roomId && from < b.to && to > b.from; });
   }
   function freeRooms(from, to) { return D.rooms.filter(function (r) { return isFree(r.id, from, to); }); }
@@ -184,7 +191,7 @@
           el('button', { type: 'button', class: 'dp-nav', 'aria-label': 'Next month', html: '&#8250;', onclick: function () { shift(1); } })
         ]),
         monthsEl,
-        el('p', { class: 'dp-legend' }, [el('span', { class: 'dp-key', 'aria-hidden': 'true', text: '12' }), ' Fully booked' + (D.showDemoNotice ? ' · sample calendar' : '')]),
+        NB_LIVE ? null : el('p', { class: 'dp-legend' }, [el('span', { class: 'dp-key', 'aria-hidden': 'true', text: '12' }), ' Fully booked' + (D.showDemoNotice ? ' · sample calendar' : '')]),
         el('div', { class: 'dp-foot' }, [sumEl, el('div', { class: 'dp-foot-btns' }, [
           el('button', { type: 'button', class: 'fx-btn fx-btn-ghost', text: 'Clear', onclick: function () { st.from = ''; st.to = ''; st.step = 'from'; render(); } }),
           doneBtn])])
@@ -728,7 +735,49 @@
         el('button', { type: 'button', class: 'btn avail-btn', text: btnLabel, onclick: function () { if (D.booking.nightsbridgeUrl) window.open(D.booking.nightsbridgeUrl, '_blank', 'noopener'); else if (bookHere) bookHere(prefill); else location.href = bookUrl(prefill); } })
       ]);
     }
+    // NightsBridge mode: the price for the chosen dates, how many units the party needs,
+    // and one button that opens NightsBridge on those dates (live availability, instant booking).
+    function runNB(q) {
+      out.innerHTML = '';
+      var n = nightsBetween(q.from, q.to), party = q.adults + q.kids;
+      var perUnit = D.rooms[0].sleeps || 2, units = Math.ceil(party / perUnit);
+      var head = fmtDate(q.from) + ' – ' + fmtDate(q.to) + ' · ' + n + ' night' + (n > 1 ? 's' : '') + ' · ' + party + ' guest' + (party > 1 ? 's' : '');
+      if (units > D.rooms.length) {
+        out.appendChild(el('h3', { class: 'avail-title', text: 'A group of ' + party + '? Let\'s talk' }));
+        out.appendChild(el('p', { class: 'avail-meta', text: 'Our ' + D.rooms.length + ' units sleep ' + D.rooms.length * perUnit + ' guests in total. Send us your dates and we\'ll see what we can do.' }));
+        out.appendChild(el('p', { class: 'avail-meta' }, [el('a', { href: waLink('Hello Lindani Farm, we are ' + party + ' guests and would like to stay from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + '.'), target: '_blank', rel: 'noopener', class: 'avail-link', text: 'Ask the farm on WhatsApp' })]));
+        return;
+      }
+      // nights grouped by rate, e.g. "2 nights × R1,400 + 1 night × R1,800"
+      var groups = [], unitTotal = 0;
+      for (var i = 0; i < n; i++) {
+        var r = nightRate(D.rooms[0], addDays(q.from, i)); unitTotal += r;
+        var g = groups[groups.length - 1];
+        if (g && g.rate === r) g.n++; else groups.push({ rate: r, n: 1 });
+      }
+      var total = unitTotal * units;
+      var calc = groups.map(function (g) { return g.n + ' night' + (g.n > 1 ? 's' : '') + ' × ' + money(g.rate); }).join(' + ') + (units > 1 ? ', × ' + units + ' units' : '');
+      var name = units === 1 ? 'One unit' : units === 2 ? 'Two interlinking units' : units + ' units';
+      var sub = units === 1 ? 'Queen bed · kitchenette · en-suite shower · sleeps ' + perUnit
+        : units === 2 ? 'One + Two or Three + Four: open the connecting door and stay together'
+        : 'Two interlinking pairs' + (units === 3 ? ' (or one pair plus a unit)' : '') + ' · sleeps ' + units * perUnit;
+      out.appendChild(el('div', { class: 'avail-top' }, [el('h3', { class: 'avail-title', text: 'Your stay: ' + money(total) })]));
+      out.appendChild(el('p', { class: 'avail-meta', text: head }));
+      out.appendChild(el('ul', { class: 'avail-list' }, [el('li', { class: 'avail-card' }, [
+        el('div', null, [el('b', { class: 'avail-name', text: name }), el('span', { class: 'avail-sub', text: sub })]),
+        el('div', { class: 'avail-price' }, [el('b', { text: money(total) }), el('span', { text: calc })]),
+        el('a', { class: 'btn btn-book avail-btn', href: nbUrl(q.from, q.to), target: '_blank', rel: 'noopener', text: 'Book these dates' })
+      ])]));
+      var plan = paymentPlan(q.from, total);
+      if (plan) out.appendChild(el('p', { class: 'avail-meta', text: plan.text }));
+      out.appendChild(el('p', { class: 'avail-meta avail-nb' }, [
+        document.createTextNode('Opens NightsBridge with your dates filled in: see live availability and book instantly' + (units > 1 ? ' (choose ' + units + ' units there)' : '') + '. '),
+        el('a', { href: D.booking.policyUrl || 'policy.html', class: 'avail-link', text: 'Booking policy' }), document.createTextNode(' · '),
+        el('a', { href: waLink('Hello Lindani Farm, I\'d like to stay from ' + fmtDate(q.from) + ' to ' + fmtDate(q.to) + ' (' + party + ' guests).'), target: '_blank', rel: 'noopener', class: 'avail-link', text: 'Questions? WhatsApp us' })
+      ]));
+    }
     function run(q) {
+      if (NB_LIVE) return runNB(q);
       out.innerHTML = '';
       var n = nightsBetween(q.from, q.to), party = q.adults + q.kids;
       var free = freeRooms(q.from, q.to);
@@ -778,6 +827,14 @@
         var target = !q.from || q.from < today() ? f.from : f.to;
         setErr(target, msg); target.focus(); out.innerHTML = ''; return;
       }
+      run(q);
+    });
+    // In NightsBridge mode the price follows every change, no button press needed
+    if (NB_LIVE) form.addEventListener('change', function () {
+      var q = { from: f.from.value, to: f.to.value, adults: +f.adults.value, kids: +f.kids.value };
+      setErr(f.from, ''); setErr(f.to, '');
+      var msg = validStay(q.from, q.to);
+      if (msg) { var target = !q.from || q.from < today() ? f.from : f.to; setErr(target, msg); out.innerHTML = ''; return; }
       run(q);
     });
     // Show real results straight away for the default weekend
@@ -864,6 +921,15 @@
   /* ---------- Studios page: availability grid (4 weeks per view) ---------- */
   (function () {
     var box = $('#avail-grid'); if (!box) return;
+    if (NB_LIVE) {
+      var intro = box.parentNode.querySelector('.section-head p');
+      if (intro) intro.textContent = 'Availability is live on NightsBridge, our booking calendar, so what you see there is always up to date.';
+      box.className = 'nb-panel';
+      box.appendChild(el('p', { text: 'Open the calendar to see which nights are free for every unit, then book instantly. Book two interlinking units to stay together as a family.' }));
+      box.appendChild(el('p', { class: 'nb-actions' }, [el('a', { class: 'btn btn-book', href: D.booking.nightsbridgeUrl, target: '_blank', rel: 'noopener', text: 'See live availability' }),
+        document.createTextNode(' '), el('a', { class: 'nb-policy', href: D.booking.policyUrl || 'policy.html', text: 'Booking policy' })]));
+      return;
+    }
     var start = today(), DAYS = 28;
     function render() {
       DAYS = Math.max(7, Math.min(28, Math.floor((box.clientWidth - 220) / 43)));
@@ -1051,7 +1117,7 @@
         var plan = paymentPlan(a, total);
         if (plan) sum.appendChild(el('p', { class: 'fx-small sum-plan', text: plan.text }));
       }
-      sum.appendChild(el('p', { class: 'fx-small', text: (avail ? 'Looks free on our calendar. ' : 'Looks booked for these dates: we\'ll suggest alternatives. ') + (D.showDemoNotice ? '(Sample calendar.)' : '') }));
+      if (!NB_LIVE) sum.appendChild(el('p', { class: 'fx-small', text: (avail ? 'Looks free on our calendar. ' : 'Looks booked for these dates: we\'ll suggest alternatives. ') + (D.showDemoNotice ? '(Sample calendar.)' : '') }));
     }
     ['change', 'input'].forEach(function (ev) { form.addEventListener(ev, summary); });
     summary();

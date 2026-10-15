@@ -15,7 +15,7 @@ window.LODGE = {
   name: "Lindani Farm",
   // Shown as a small notice in the concierge while sample data is in use.
   // Set to false once every PLACEHOLDER below has been replaced.
-  showDemoNotice: true,
+  showDemoNotice: false,               // rates and availability are real now (NightsBridge)
 
   contact: {
     phoneDisplay: "083 291 6790",          // from the farm's Instagram

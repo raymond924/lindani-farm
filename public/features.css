@@ -197,3 +197,13 @@ html.dp-lock,html.dp-lock body{overflow:hidden}
 .enq-send .fx-btn-ghost:hover{border-color:#fff}
 .enq-send .fx-copy{color:var(--ink)}
 .enq-send[hidden]{display:none}
+
+/* NightsBridge mode: one full-width result with the price and a gold "Book these dates" button */
+.avail-list:has(> .avail-card:only-child){grid-template-columns:1fr}
+.avail-card:only-child{flex-direction:row;align-items:center;gap:16px 32px;padding:24px}
+.avail-card:only-child > div:first-child{flex:1 1 auto;min-width:0}
+.avail-card:only-child .avail-price{margin-top:0;text-align:right}
+.avail-btn.btn-book{background:var(--gold);color:var(--gold-ink);border-color:var(--gold);padding:14px 22px;font-size:15px;white-space:nowrap}
+.avail-btn.btn-book:hover{filter:brightness(1.05);background:var(--gold);color:var(--gold-ink)}
+.avail-nb{font-size:14px}
+@media (max-width:760px){.avail-card:only-child{flex-direction:column;align-items:stretch}.avail-card:only-child .avail-price{text-align:left}}
