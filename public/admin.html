@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Bookings · Lindani Farm</title>
+<link rel="preload" href="assets/fonts/satoshi-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/satoshi-500.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;1,400&display=swap">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+
+<header class="ad-bar">
+  <a class="ad-logo" href="index.html" aria-label="Lindani Farm website">
+    <span class="ad-logo-name">Lindani</span><span class="ad-logo-sub">Bookings</span>
+  </a>
+  <div class="ad-bar-actions" id="bar-actions" hidden>
+    <button type="button" class="ad-btn ad-btn-line" id="refresh">Refresh</button>
+    <button type="button" class="ad-btn ad-btn-text" id="signout">Sign out</button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Sign in -->
+  <section class="ad-login" id="login" hidden aria-labelledby="login-title">
+    <h1 id="login-title">Bookings <em>dashboard</em></h1>
+    <p class="ad-muted">Sign in to see booking requests from the website.</p>
+    <form id="login-form" class="ad-form" novalidate>
+      <div class="field">
+        <label for="pw">Password</label>
+        <input id="pw" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <p class="ad-err" id="login-err" role="alert"></p>
+      <button class="btn btn-book" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <!-- Dashboard -->
+  <div id="dash" hidden>
+    <section class="ad-head" aria-labelledby="dash-title">
+      <div>
+        <p class="tag">(&nbsp;<span id="today-label"></span>&nbsp;)</p>
+        <h1 id="dash-title">Your <em>bookings</em></h1>
+      </div>
+      <button type="button" class="btn btn-book" id="add-open">Add a booking</button>
+    </section>
+
+    <section class="ad-stats" aria-label="Summary">
+      <div class="ad-stat"><span class="ad-stat-n" id="st-new">0</span><span class="ad-stat-l">New requests</span></div>
+      <div class="ad-stat"><span class="ad-stat-n" id="st-arr">0</span><span class="ad-stat-l">Arrivals in the next 30 days</span></div>
+      <div class="ad-stat"><span class="ad-stat-n" id="st-nights">0</span><span class="ad-stat-l">Nights booked in the next 30 days</span></div>
+      <div class="ad-stat"><span class="ad-stat-n" id="st-val">R 0</span><span class="ad-stat-l">Upcoming confirmed value</span></div>
+    </section>
+
+    <section class="ad-panel" aria-labelledby="occ-title">
+      <div class="ad-panel-head">
+        <h2 id="occ-title">Next <em>two weeks</em></h2>
+        <p class="ad-key"><i class="k-conf"></i>Confirmed <i class="k-new"></i>Request</p>
+      </div>
+      <div class="ad-occ" id="occ"></div>
+    </section>
+
+    <section aria-labelledby="list-title">
+      <h2 id="list-title" class="sr">Bookings</h2>
+      <div class="ad-tabs" role="tablist" id="tabs">
+        <button role="tab" data-tab="new">New</button>
+        <button role="tab" data-tab="upcoming">Confirmed</button>
+        <button role="tab" data-tab="past">Past</button>
+        <button role="tab" data-tab="declined">Declined</button>
+        <button role="tab" data-tab="all">All</button>
+      </div>
+      <ul class="ad-list" id="list" aria-live="polite"></ul>
+    </section>
+  </div>
+
+  <p class="ad-status" id="status" role="status"></p>
+</main>
+
+<!-- Add a booking taken by phone, Booking.com and so on -->
+<dialog class="ad-dialog" id="add-dialog" aria-labelledby="add-title">
+  <form id="add-form" class="ad-form" novalidate>
+    <h2 id="add-title">Add a <em>booking</em></h2>
+    <p class="ad-muted">For stays booked by phone, WhatsApp, Booking.com or Airbnb. It blocks the studio on the website's calendar.</p>
+    <div class="ad-grid">
+      <div class="field"><label for="a-name">Guest name</label><input id="a-name" name="name" required autocomplete="off"></div>
+      <div class="field"><label for="a-source">Booked through</label>
+        <select id="a-source" name="source">
+          <option>Phone or WhatsApp</option><option>Booking.com</option><option>Airbnb</option><option>NightsBridge</option><option>Walk-in</option><option>Other</option>
+        </select></div>
+      <div class="field"><label for="a-phone">Phone</label><input id="a-phone" name="phone" type="tel" autocomplete="off"></div>
+      <div class="field"><label for="a-email">Email</label><input id="a-email" name="email" type="email" autocomplete="off"></div>
+      <div class="field"><label for="a-from">Arrive</label><input id="a-from" name="from" type="date" required></div>
+      <div class="field"><label for="a-to">Leave</label><input id="a-to" name="to" type="date" required></div>
+      <div class="field"><label for="a-room">Studio</label><select id="a-room" name="room"></select></div>
+      <div class="field"><label for="a-adults">Adults</label><select id="a-adults" name="adults"></select></div>
+      <div class="field"><label for="a-kids">Children</label><select id="a-kids" name="kids"></select></div>
+      <div class="field"><label for="a-est">Amount (R, optional)</label><input id="a-est" name="estimate" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <div class="field"><label for="a-notes">Notes</label><textarea id="a-notes" name="notes" rows="2"></textarea></div>
+    <p class="ad-err" id="add-err" role="alert"></p>
+    <div class="ad-row">
+      <button class="btn btn-book" type="submit">Save booking</button>
+      <button class="ad-btn ad-btn-line" type="button" id="add-cancel">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="lodge-data.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

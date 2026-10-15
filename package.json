@@ -1,0 +1,9 @@
+{
+  "name": "lindani-farm-site",
+  "private": true,
+  "description": "Lindani Farm website: static pages plus the booking functions in netlify/functions",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "11.1.3"
+  }
+}

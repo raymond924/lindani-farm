@@ -1,0 +1,115 @@
+/* Lindani Farm: bookings dashboard (admin.html). Uses the site's tokens from site.css. */
+body.admin{min-height:100vh}
+.admin main{max-width:1200px;margin:0 auto;padding:32px 48px 96px}
+.admin h1{font-size:clamp(44px,6vw,72px)}
+.admin h2{font-size:32px}
+.admin h1 em,.admin h2 em{color:var(--olive-2)}
+.ad-muted{color:var(--muted)}
+.ad-err{color:#a5462b;min-height:1.7em;font-size:14px}
+
+/* top bar: the floating white nav, as on the site */
+.ad-bar{position:sticky;top:12px;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;margin:12px;padding:10px 12px 10px 22px;border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(31,36,26,.06)}
+.ad-logo{display:flex;align-items:baseline;gap:12px}
+.ad-logo-name{font:400 26px/1 var(--serif);letter-spacing:.18em;text-transform:uppercase}
+.ad-logo-sub{font:700 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ad-bar-actions{display:flex;gap:8px}
+
+.ad-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:var(--btn-r);border:1px solid transparent;background:none;font:500 14px/1 var(--sans);cursor:pointer;white-space:nowrap}
+.ad-btn-line{border-color:var(--olive);color:var(--olive)}
+.ad-btn-line:hover{background:var(--olive);color:#fff}
+.ad-btn-dark{background:var(--olive);color:#fff}
+.ad-btn-dark:hover{background:var(--olive-2)}
+.ad-btn-text{color:var(--muted)}
+.ad-btn-text:hover{color:var(--ink)}
+.ad-btn-danger{color:#a5462b}
+.ad-btn[disabled]{opacity:.5;cursor:default}
+.admin .btn-book{min-height:52px;justify-content:center}
+
+/* sign in */
+.ad-login{max-width:440px;margin:12vh auto 0}
+.ad-login h1{margin-bottom:12px}
+.ad-form{display:grid;gap:18px}
+.ad-login .ad-form{margin-top:28px}
+
+/* heading and stats */
+.ad-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin:24px 0 32px}
+.ad-head .tag{display:block;margin-bottom:14px}
+.ad-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:12px}
+.ad-stat{display:flex;flex-direction:column;gap:10px;padding:24px;border-radius:12px;background:var(--panel)}
+.ad-stat:first-child{background:var(--olive);color:#fff}
+.ad-stat:first-child .ad-stat-l{color:rgba(255,255,255,.75)}
+.ad-stat-n{font:400 48px/1 var(--serif)}
+.ad-stat-l{font-size:14px;color:var(--muted)}
+
+/* two-week occupancy */
+.ad-panel{padding:24px;border-radius:12px;background:var(--panel);margin-bottom:48px}
+.ad-panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.ad-key{display:flex;align-items:center;gap:8px 16px;font-size:14px;color:var(--muted)}
+.ad-key i{display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:-8px}
+.k-conf{background:var(--olive)}
+.k-new{background:var(--gold)}
+.ad-occ{position:relative;overflow-x:auto}
+.ad-occ table{border-collapse:separate;border-spacing:3px;min-width:100%}
+.ad-occ th{font:700 12px/1.2 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:4px 2px;text-align:center;white-space:nowrap}
+.ad-occ th.room{text-align:left;font:500 18px/1.1 var(--serif);text-transform:none;letter-spacing:0;color:var(--ink);padding-right:12px;position:sticky;left:0;background:var(--panel)}
+.ad-occ td{position:relative;height:40px;min-width:38px;border-radius:6px;background:#fff}
+.ad-occ td.conf{background:var(--olive)}
+.ad-occ td.new{background:var(--gold)}
+.ad-occ td.clash{background:repeating-linear-gradient(45deg,var(--olive) 0 6px,var(--gold) 6px 12px)}
+
+/* tabs */
+.ad-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.ad-tabs button{min-height:44px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:none;font:500 14px/1 var(--sans);cursor:pointer}
+.ad-tabs button[aria-selected="true"]{background:var(--olive);border-color:var(--olive);color:#fff}
+.ad-tabs .n{margin-left:6px;opacity:.7}
+
+/* booking cards */
+.ad-list{display:grid;gap:12px}
+.ad-card{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px 40px;padding:28px;border-radius:12px;background:#fff;border:1px solid var(--line)}
+.ad-card.is-new{border-color:var(--gold);box-shadow:inset 4px 0 0 var(--gold)}
+.ad-card-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.ad-card h3{font:400 34px/1.05 var(--serif)}
+.ad-dates{font:500 17px/1.4 var(--sans);margin-top:6px}
+.ad-meta{color:var(--muted);font-size:14px;margin-top:4px}
+.ad-pill{display:inline-block;padding:5px 10px;border-radius:999px;font:700 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;background:var(--panel);color:var(--muted)}
+.ad-pill.new{background:var(--gold);color:var(--gold-ink)}
+.ad-pill.confirmed{background:var(--olive);color:#fff}
+.ad-pill.declined,.ad-pill.cancelled{background:var(--sage);color:var(--muted)}
+.ad-warn{margin-top:12px;padding:10px 14px;border-radius:8px;background:#fbeee9;color:#a5462b;font-size:14px}
+.ad-dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;margin-top:16px;font-size:15px}
+.ad-dl dt{color:var(--muted)}
+.ad-dl dd{overflow-wrap:anywhere}
+.ad-dl a{text-decoration:underline;text-underline-offset:3px}
+.ad-guest-notes{margin-top:14px;padding:12px 14px;border-radius:8px;background:var(--panel);font-size:15px;white-space:pre-line}
+.ad-side{display:flex;flex-direction:column;gap:14px}
+.ad-side .field select,.ad-side .field textarea{height:auto;min-height:48px;padding:12px 14px}
+.ad-side textarea{resize:vertical}
+.ad-row{display:flex;gap:8px;flex-wrap:wrap}
+.ad-saved{font-size:13px;color:var(--muted);min-height:1.4em}
+.ad-empty{padding:48px 24px;border-radius:12px;background:var(--panel);text-align:center;color:var(--muted)}
+
+.ad-status{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:12px 18px;border-radius:8px;background:var(--olive);color:#fff;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+.ad-status.on{opacity:1}
+
+/* add-a-booking dialog */
+.ad-dialog{width:min(720px,calc(100vw - 24px));max-height:calc(100vh - 24px);padding:32px;border:0;border-radius:16px;background:var(--canvas);color:var(--ink);box-shadow:0 24px 60px rgba(31,36,26,.25)}
+.ad-dialog::backdrop{background:rgba(31,36,26,.55)}
+.ad-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.ad-dialog textarea{height:auto;padding:12px 16px}
+
+@media (max-width:900px){
+  .ad-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ad-card{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .admin main{padding:20px 20px 80px}
+  .ad-bar{margin:8px;top:8px;padding-left:16px}
+  .ad-logo-sub{display:none}
+  .ad-stat{padding:18px}
+  .ad-stat-n{font-size:36px}
+  .ad-card{padding:20px}
+  .ad-card h3{font-size:28px}
+  .ad-dialog{padding:22px 18px}
+  .ad-grid{grid-template-columns:minmax(0,1fr)}
+  .ad-head .btn{width:100%}
+}

@@ -1,0 +1,47 @@
+# Netlify settings for the Lindani Farm site.
+# In Netlify: leave Base directory empty. Build command: none. Publish directory: public
+# Built from the source project with tools/publish_repo.sh; edit the source, not this repo.
+[build]
+  command = ""
+  publish = "public"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Booking requests, the bookings dashboard (/admin) and live availability.
+# Bookings are stored in Netlify Blobs. Set ADMIN_PASSWORD in Netlify to open the dashboard.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/admin"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
