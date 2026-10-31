@@ -13,6 +13,9 @@ that Netlify site running: it is what keeps every page up to date.
 | book.html | /book | Book your stay · Lindani Farm |
 | contact.html | /contact | Contact · Lindani Farm |
 | policy.html | /policy | Booking policy · Lindani Farm |
+| privacy.html | /privacy | Privacy policy · Lindani Farm |
+| terms.html | /terms | Website terms · Lindani Farm |
+| paia.html | /paia | PAIA manual · Lindani Farm |
 
 The paths must match exactly: the menu and footer link to `/studios`, `/farm` and so on.
 Page descriptions for GHL's SEO settings are in `pages.tsv`.

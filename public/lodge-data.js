@@ -260,7 +260,7 @@ window.LODGE = {
   i18n: {
     en: {
       nav_explore: "Explore", nav_book: "Book", page_studios: "Four studios, <em>one quiet farm</em>", page_farm: "Life on <em>the farm</em>", page_explore: "Taste, explore and <em>wander nearby</em>", page_book: "Book <em>your stay</em>", page_contact: "Find us, <em>talk to us</em>", avail_title: "Availability <em>at a glance</em>",
-      language: "Language", nav_farm: "The farm", nav_studios: "Studios", nav_nearby: "Nearby", nav_onfarm: "On the farm", nav_contact: "Contact", nav_policy: "Booking policy",
+      language: "Language", nav_farm: "The farm", nav_studios: "Studios", nav_nearby: "Nearby", nav_onfarm: "On the farm", nav_contact: "Contact", nav_policy: "Booking policy", page_privacy: "Privacy <em>policy</em>", page_terms: "Website <em>terms</em>", page_paia: "PAIA <em>manual</em>",
       book: "Book your stay", hero_sub: "Four private self-catering units just outside Paarl, interlinking in pairs so families can stay together.", hero_label: "( Paarl · Cape Winelands )", hero_title: "Leave the city <em>at the gate.</em>",
       quick_title: "Plan your <em>stay here</em>", check_dates: "Check dates", exp_title: "A farm stay <br><em>made for slowing down</em>",
       meet_studios: "Meet the studios", studios_title: "Come home to <br><em>your own studio</em>", rates_title: "Studios &amp; <em>rates</em>",
@@ -275,7 +275,7 @@ window.LODGE = {
     },
     de: {
       nav_explore: "Entdecken", nav_book: "Buchen", page_studios: "Vier Studios, <em>eine ruhige Farm</em>", page_farm: "Das Leben <em>auf der Farm</em>", page_explore: "Genießen, entdecken und <em>die Umgebung erkunden</em>", page_book: "Buchen Sie <em>Ihren Aufenthalt</em>", page_contact: "Finden Sie uns, <em>sprechen Sie mit uns</em>", avail_title: "Verfügbarkeit <em>auf einen Blick</em>",
-      language: "Sprache", nav_farm: "Die Farm", nav_studios: "Studios", nav_nearby: "Umgebung", nav_onfarm: "Auf der Farm", nav_contact: "Kontakt", nav_policy: "Buchungsrichtlinie",
+      language: "Sprache", nav_farm: "Die Farm", nav_studios: "Studios", nav_nearby: "Umgebung", nav_onfarm: "Auf der Farm", nav_contact: "Kontakt", nav_policy: "Buchungsrichtlinie", page_privacy: "<em>Datenschutz</em>", page_terms: "<em>Nutzungsbedingungen</em>", page_paia: "PAIA-<em>Handbuch</em>",
       book: "Aufenthalt buchen", hero_sub: "Vier private Studios für Selbstversorger auf einer Farm direkt außerhalb von Paarl.", hero_label: "( Paarl · Cape Winelands )", hero_title: "Lassen Sie die Stadt <em>am Tor zurück.</em>",
       quick_title: "Planen Sie <em>Ihren Aufenthalt</em>", check_dates: "Termine prüfen", exp_title: "Ein Farmaufenthalt, <br><em>um zur Ruhe zu kommen</em>",
       meet_studios: "Die Studios ansehen", studios_title: "Willkommen in <br><em>Ihrem eigenen Studio</em>", rates_title: "Studios &amp; <em>Preise</em>",
@@ -290,7 +290,7 @@ window.LODGE = {
     },
     nl: {
       nav_explore: "Ontdekken", nav_book: "Boeken", page_studios: "Vier studio's, <em>één rustige boerderij</em>", page_farm: "Het leven <em>op de boerderij</em>", page_explore: "Proeven, ontdekken en <em>de omgeving verkennen</em>", page_book: "Boek <em>je verblijf</em>", page_contact: "Vind ons, <em>praat met ons</em>", avail_title: "Beschikbaarheid <em>in één oogopslag</em>",
-      language: "Taal", nav_farm: "De boerderij", nav_studios: "Studio's", nav_nearby: "In de buurt", nav_onfarm: "Op de boerderij", nav_contact: "Contact", nav_policy: "Boekingsbeleid",
+      language: "Taal", nav_farm: "De boerderij", nav_studios: "Studio's", nav_nearby: "In de buurt", nav_onfarm: "Op de boerderij", nav_contact: "Contact", nav_policy: "Boekingsbeleid", page_privacy: "<em>Privacybeleid</em>", page_terms: "<em>Gebruiksvoorwaarden</em>", page_paia: "PAIA-<em>handleiding</em>",
       book: "Boek je verblijf", hero_sub: "Vier privéstudio's met eigen keuken op een boerderij net buiten Paarl.", hero_label: "( Paarl · Cape Winelands )", hero_title: "Laat de stad <em>achter bij het hek.</em>",
       quick_title: "Plan hier <em>je verblijf</em>", check_dates: "Data bekijken", exp_title: "Een boerderijverblijf <br><em>om tot rust te komen</em>",
       meet_studios: "Bekijk de studio's", studios_title: "Thuiskomen in <br><em>je eigen studio</em>", rates_title: "Studio's &amp; <em>prijzen</em>",
@@ -305,7 +305,7 @@ window.LODGE = {
     },
     af: {
       nav_explore: "Verken", nav_book: "Bespreek", page_studios: "Vier studio's, <em>een stil plaas</em>", page_farm: "Die lewe <em>op die plaas</em>", page_explore: "Proe, verken en <em>dwaal in die omgewing</em>", page_book: "Bespreek <em>jou verblyf</em>", page_contact: "Kry ons, <em>praat met ons</em>", avail_title: "Beskikbaarheid <em>in een oogopslag</em>",
-      language: "Taal", nav_farm: "Die plaas", nav_studios: "Studio's", nav_nearby: "In die omgewing", nav_onfarm: "Op die plaas", nav_contact: "Kontak", nav_policy: "Besprekingsbeleid",
+      language: "Taal", nav_farm: "Die plaas", nav_studios: "Studio's", nav_nearby: "In die omgewing", nav_onfarm: "Op die plaas", nav_contact: "Kontak", nav_policy: "Besprekingsbeleid", page_privacy: "<em>Privaatheidsbeleid</em>", page_terms: "Webwerf-<em>bepalings</em>", page_paia: "PAIA-<em>handleiding</em>",
       book: "Bespreek jou verblyf", hero_sub: "Vier private selfsorg-studio's op 'n plaas net buite die Paarl.", hero_label: "( Paarl · Kaapse Wynland )", hero_title: "Los die stad <em>by die hek.</em>",
       quick_title: "Beplan <em>jou verblyf</em> hier", check_dates: "Kyk na datums", exp_title: "'n Plaasverblyf <br><em>om stadiger te leef</em>",
       meet_studios: "Sien die studio's", studios_title: "Kom tuis in <br><em>jou eie studio</em>", rates_title: "Studio's &amp; <em>tariewe</em>",

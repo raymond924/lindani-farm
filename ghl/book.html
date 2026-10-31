@@ -11,7 +11,7 @@
 body{margin:0}
 </style>
 <script>/* motion: hide what motion.js reveals, unless reduced motion; give up after 3s if motion.js never runs */(function(d){if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;d.classList.add('mo');setTimeout(function(){if(!window.LINDANI_MOTION)d.classList.remove('mo')},3000)})(document.documentElement)</script>
-<script>window.LINDANI_SITE = { assets: "https://lindanifarms.netlify.app/assets/", pages: { index: "/", studios: "/studios", farm: "/farm", explore: "/explore", book: "/book", contact: "/contact", policy: "/policy" } };</script>
+<script>window.LINDANI_SITE = { assets: "https://lindanifarms.netlify.app/assets/", pages: { index: "/", studios: "/studios", farm: "/farm", explore: "/explore", book: "/book", contact: "/contact", policy: "/policy", privacy: "/privacy", terms: "/terms", paia: "/paia" } };</script>
 <div class="lindani-root">
 <a class="skip" href="#main">Skip to content</a>
 
@@ -127,6 +127,7 @@ body{margin:0}
   </div>
   <div class="f-bot">
     <span>© <span id="yr">2026</span> Lindani Farm, Paarl</span>
+    <nav class="f-legal" aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/paia">PAIA manual</a></nav>
     <div class="f-social">
       <a href="https://www.instagram.com/lindanifarm/" aria-label="Lindani Farm on Instagram" rel="noopener" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".8" fill="currentColor"/></svg>
