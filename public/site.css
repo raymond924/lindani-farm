@@ -733,3 +733,8 @@ span.ag-cell{background:var(--sage);color:var(--muted);text-decoration:line-thro
 .f-legal a:hover{color:#fff}
 .form-note a{text-decoration:underline;text-underline-offset:2px}
 @media (max-width:860px){.policy-grid .policy-sec.wide{grid-column:auto}}
+/* thumb-sized taps for the small text links on phones */
+@media (max-width:860px){
+  .f-legal a,.cta-policy a,.nb-policy{min-height:44px;display:inline-flex;align-items:center}
+  .f-legal{gap:4px 20px}
+}
