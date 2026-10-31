@@ -2,4 +2,4 @@ User-agent: *
 Disallow: /admin
 Disallow: /admin.html
 
-Sitemap: https://lindanifarms.netlify.app/sitemap.xml
+Sitemap: https://lindanifarm.co.za/sitemap.xml
