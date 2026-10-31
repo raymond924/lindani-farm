@@ -3,24 +3,22 @@
 The live website for Lindani Farm (https://lindanifarm.co.za), four self-catering units in
 Klein-Drakenstein, Paarl.
 
-## Hosting: Cloudflare Pages
+## Hosting: Render (free static site)
 
-Cloudflare Pages publishes this repository automatically on every push to `main`. Project settings:
+Render publishes this repository automatically on every push to `main`. It is set up from
+`render.yaml` (in Render: New > Blueprint > connect this repository):
 
-| Setting | Value |
-|---|---|
-| Production branch | `main` |
-| Framework preset | None |
-| Build command | *(empty)* |
-| Build output directory | `public` |
-| Root directory | *(empty)* |
+- publishes `public/`, nothing to build
+- short page addresses (`/studios` serves `studios.html`) and the site's own 404 page
+- redirects from old-site addresses, and security and caching headers
 
-`public/_redirects` (old-site addresses) and `public/_headers` (security and caching) are read by
-Cloudflare. Bookings go to NightsBridge and messages to WhatsApp or email, so the site needs no
-server functions; the `/admin` dashboard and `netlify/` functions only run on Netlify.
+Bookings go to NightsBridge and messages to WhatsApp or email, so the site needs no server
+functions; the `/admin` dashboard and `netlify/` functions only run on Netlify.
+`public/_redirects` and `public/_headers` hold the same rules for Netlify or Cloudflare Pages.
 
 ## Files
 
+- `render.yaml`: Render settings (generated; edit `netlify.toml` in the source project)
 - `public/`: the website (pages, styles, scripts, photos, `_redirects`, `_headers`, sitemap, robots)
 - `netlify/`: booking functions (requests, dashboard, availability)
 - `netlify.toml`: settings if the site is ever hosted on Netlify again
