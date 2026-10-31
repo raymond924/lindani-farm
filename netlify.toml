@@ -33,6 +33,117 @@
     # the GoHighLevel copy of the site loads its photos and fonts from here
     Access-Control-Allow-Origin = "*"
 
+# Common addresses from a previous website, so old links and Google results still land on the right page.
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/index.php"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/about"
+  to = "/farm"
+  status = 301
+
+[[redirects]]
+  from = "/about-us"
+  to = "/farm"
+  status = 301
+
+[[redirects]]
+  from = "/the-farm"
+  to = "/farm"
+  status = 301
+
+[[redirects]]
+  from = "/gallery"
+  to = "/farm"
+  status = 301
+
+[[redirects]]
+  from = "/accommodation"
+  to = "/studios"
+  status = 301
+
+[[redirects]]
+  from = "/rooms"
+  to = "/studios"
+  status = 301
+
+[[redirects]]
+  from = "/units"
+  to = "/studios"
+  status = 301
+
+[[redirects]]
+  from = "/cottages"
+  to = "/studios"
+  status = 301
+
+[[redirects]]
+  from = "/rates"
+  to = "/studios"
+  status = 301
+
+[[redirects]]
+  from = "/booking"
+  to = "/book"
+  status = 301
+
+[[redirects]]
+  from = "/bookings"
+  to = "/book"
+  status = 301
+
+[[redirects]]
+  from = "/book-now"
+  to = "/book"
+  status = 301
+
+[[redirects]]
+  from = "/reservations"
+  to = "/book"
+  status = 301
+
+[[redirects]]
+  from = "/contact-us"
+  to = "/contact"
+  status = 301
+
+[[redirects]]
+  from = "/things-to-do"
+  to = "/explore"
+  status = 301
+
+[[redirects]]
+  from = "/activities"
+  to = "/explore"
+  status = 301
+
+[[redirects]]
+  from = "/booking-policy"
+  to = "/policy"
+  status = 301
+
+[[redirects]]
+  from = "/privacy-policy"
+  to = "/privacy"
+  status = 301
+
+[[redirects]]
+  from = "/terms-and-conditions"
+  to = "/terms"
+  status = 301
+
+[[redirects]]
+  from = "/paia-manual"
+  to = "/paia"
+  status = 301
+
 [[redirects]]
   from = "/*"
   to = "/404.html"
@@ -47,3 +158,12 @@
   for = "/*.css"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Basic security headers for every page
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
