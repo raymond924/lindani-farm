@@ -145,3 +145,6 @@ html.dp-lock,html.dp-lock body{overflow:hidden}
   .has-nl-badge .fx-panel{bottom:72px;height:min(calc(88dvh - 72px),648px);border-radius:16px}
   .has-nl-badge .footer{margin-bottom:156px}
 }
+/* plain-HTML versions of the data sections, shown until features.js draws the interactive ones */
+.fx-static{margin:8px 0 0;padding-left:18px;list-style:disc;color:var(--muted);line-height:1.6}
+.fx-static li+li{margin-top:4px}
