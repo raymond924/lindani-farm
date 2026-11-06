@@ -21,7 +21,7 @@ window.LODGE = {
     phoneDisplay: "063 678 2359",          // confirmed by the farm (Nov 2026)
     phoneInternational: "+27636782359",
     whatsapp: "27636782359",               // country code + number, no + or spaces
-    email: "stay@lindanifarm.co.za",     // the farm's booking address
+    email: "info@lindanifarm.co.za",     // the farm's booking address
     area: "Just outside Paarl, Western Cape",
     address: "Lindani Plaas, Klein-Drakenstein, Paarl",  // from the farm's guest guide
     mapsLink: ""                           // PLACEHOLDER: paste a Google Maps link to the gate
@@ -158,7 +158,7 @@ window.LODGE = {
   faqs: [
     { q: "How do I book?", a: "On NightsBridge, our booking calendar: tap any \"Book\" button on this site, choose your dates and units, and book instantly. Questions first? WhatsApp us on 063 678 2359." },
     { q: "How do I pay?", a: "By EFT. Pay a 50% deposit within 24 hours of booking and the balance 7 days before check-in, or pay in full upfront. If your stay is less than 7 days away, full payment confirms it. Use your invoice number as the reference and send the proof of payment on WhatsApp or by email.", link: "policyUrl" },
-    { q: "What if I need to cancel?", a: "Cancellations must be in writing to stay@lindanifarm.co.za. 30 days or more before arrival, nothing is forfeited; 21 days before, 25%; 14 days before, 50%; 7 days before, 100%. No-shows and early departures aren't refunded. Refunds are paid within 7–10 business days.", link: "policyUrl" },
+    { q: "What if I need to cancel?", a: "Cancellations must be in writing to info@lindanifarm.co.za. 30 days or more before arrival, nothing is forfeited; 21 days before, 25%; 14 days before, 50%; 7 days before, 100%. No-shows and early departures aren't refunded. Refunds are paid within 7–10 business days.", link: "policyUrl" },
     { q: "Can I change my dates?", a: "Yes, up to 30 days before check-in, subject to availability. If the new dates have different rates, the difference is charged or refunded." },
     { q: "What time is check-in and check-out?", a: "Check-in is from 14:00 to 17:00. Arriving later? Let us know in advance so we can arrange it (a fee may apply). Check-out is by 10:00. Early check-in and late check-out depend on bookings: ask us on the day." },
     { q: "How does check-in work?", a: "It's self check-in. Once your stay is paid in full, we send your access code, parking details and directions on WhatsApp the day before you arrive. Park in the marked bays at the stone feature wall and walk down the stairs to the units.", link: "onboardingUrl" },
